@@ -1,0 +1,38 @@
+id: 201
+name: "Daeva Celerity Bruiser"
+splat: vampire
+size: 5
+
+attributes:
+  strength: 4
+  dexterity: 4
+  stamina: 3
+  intelligence: 2
+  wits: 3
+  resolve: 3
+  presence: 3
+  manipulation: 2
+  composure: 2
+
+skills:
+  brawl: 4
+  weaponry: 2
+  firearms: 0
+  athletics: 3
+  stealth: 1
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+vampire:
+  blood_potency: 2
+  celerity: 3
+  vigor: 2
+  resilience: 0

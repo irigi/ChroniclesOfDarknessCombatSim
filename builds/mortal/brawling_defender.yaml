@@ -1,0 +1,38 @@
+id: 104
+name: "Brawling Defender"
+splat: mortal
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 4
+  stamina: 3
+  intelligence: 2
+  wits: 4
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 4
+  weaponry: 1
+  firearms: 0
+  athletics: 2
+  stealth: 2
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+merits:
+  defensive_combat: 1
+  street_fighting: 1
+  brawling_dodge: 1
+  martial_arts_lethal: 1

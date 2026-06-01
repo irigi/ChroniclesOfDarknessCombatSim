@@ -1,0 +1,35 @@
+id: 302
+name: "Bone Shadow Mystic"
+splat: werewolf
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 4
+  stamina: 3
+  intelligence: 3
+  wits: 4
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 3
+  weaponry: 2
+  firearms: 0
+  athletics: 4
+  stealth: 3
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+werewolf:
+  primal_urge: 3

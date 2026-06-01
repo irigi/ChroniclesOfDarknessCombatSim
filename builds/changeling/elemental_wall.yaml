@@ -1,0 +1,36 @@
+id: 404
+name: "Elemental Wall"
+splat: changeling
+size: 5
+
+attributes:
+  strength: 4
+  dexterity: 2
+  stamina: 5
+  intelligence: 2
+  wits: 3
+  resolve: 4
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 3
+  weaponry: 2
+  firearms: 0
+  athletics: 2
+  stealth: 0
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 2
+  ballistic: 1
+
+changeling:
+  wyrd: 2
+  seeming: Elemental

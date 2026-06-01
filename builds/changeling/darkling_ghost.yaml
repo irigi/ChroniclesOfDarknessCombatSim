@@ -1,0 +1,36 @@
+id: 403
+name: "Darkling Ghost"
+splat: changeling
+size: 5
+
+attributes:
+  strength: 2
+  dexterity: 5
+  stamina: 3
+  intelligence: 3
+  wits: 4
+  resolve: 3
+  presence: 2
+  manipulation: 3
+  composure: 3
+
+skills:
+  brawl: 3
+  weaponry: 3
+  firearms: 0
+  athletics: 3
+  stealth: 4
+
+weapon:
+  damage_mod: 0
+  damage_type: lethal
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+changeling:
+  wyrd: 3
+  seeming: Darkling

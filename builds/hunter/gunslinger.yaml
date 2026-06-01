@@ -1,0 +1,33 @@
+id: 502
+name: "Hunter Gunslinger"
+splat: mortal
+size: 5
+
+attributes:
+  strength: 2
+  dexterity: 4
+  stamina: 2
+  intelligence: 3
+  wits: 4
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 4
+
+skills:
+  brawl: 1
+  weaponry: 0
+  firearms: 5
+  athletics: 3
+  stealth: 3
+
+weapon:
+  damage_mod: 2
+  damage_type: lethal
+  initiative_penalty: 0
+  is_ranged: true
+  is_silver: false
+
+armor:
+  general: 0
+  ballistic: 2

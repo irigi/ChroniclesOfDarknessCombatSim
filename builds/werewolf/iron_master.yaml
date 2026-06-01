@@ -1,0 +1,35 @@
+id: 301
+name: "Iron Master Combat Specialist"
+splat: werewolf
+size: 5
+
+attributes:
+  strength: 4
+  dexterity: 3
+  stamina: 4
+  intelligence: 2
+  wits: 3
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 4
+  weaponry: 2
+  firearms: 0
+  athletics: 3
+  stealth: 2
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+werewolf:
+  primal_urge: 2

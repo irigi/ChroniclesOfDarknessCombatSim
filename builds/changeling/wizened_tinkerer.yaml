@@ -1,0 +1,36 @@
+id: 406
+name: "Wizened Tinkerer"
+splat: changeling
+size: 5
+
+attributes:
+  strength: 2
+  dexterity: 4
+  stamina: 3
+  intelligence: 4
+  wits: 5
+  resolve: 3
+  presence: 2
+  manipulation: 3
+  composure: 3
+
+skills:
+  brawl: 2
+  weaponry: 3
+  firearms: 2
+  athletics: 3
+  stealth: 2
+
+weapon:
+  damage_mod: 2
+  damage_type: lethal
+  initiative_penalty: -1
+  is_ranged: false
+
+armor:
+  general: 1
+  ballistic: 0
+
+changeling:
+  wyrd: 3
+  seeming: Wizened

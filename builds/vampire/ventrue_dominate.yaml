@@ -1,0 +1,39 @@
+id: 206
+name: "Ventrue Dominator"
+splat: vampire
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 3
+  stamina: 3
+  intelligence: 3
+  wits: 3
+  resolve: 4
+  presence: 3
+  manipulation: 4
+  composure: 3
+
+skills:
+  brawl: 2
+  weaponry: 2
+  firearms: 0
+  athletics: 2
+  stealth: 1
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+vampire:
+  blood_potency: 3
+  celerity: 0
+  vigor: 1
+  resilience: 1
+  dominate: 3

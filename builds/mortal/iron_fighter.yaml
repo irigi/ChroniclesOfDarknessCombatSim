@@ -1,0 +1,37 @@
+id: 103
+name: "Iron Fighter"
+splat: mortal
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 3
+  stamina: 4
+  intelligence: 2
+  wits: 3
+  resolve: 4
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 3
+  weaponry: 2
+  firearms: 0
+  athletics: 3
+  stealth: 1
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 1
+  ballistic: 0
+
+merits:
+  iron_skin: 4
+  iron_stamina: 2
+  fast_reflexes: 2

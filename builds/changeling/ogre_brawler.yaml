@@ -1,0 +1,36 @@
+id: 401
+name: "Ogre Brawler"
+splat: changeling
+size: 5
+
+attributes:
+  strength: 5
+  dexterity: 2
+  stamina: 4
+  intelligence: 1
+  wits: 2
+  resolve: 3
+  presence: 2
+  manipulation: 1
+  composure: 3
+
+skills:
+  brawl: 4
+  weaponry: 3
+  firearms: 0
+  athletics: 2
+  stealth: 0
+
+weapon:
+  damage_mod: 1
+  damage_type: lethal
+  initiative_penalty: -1
+  is_ranged: false
+
+armor:
+  general: 1
+  ballistic: 0
+
+changeling:
+  wyrd: 3
+  glamour_max: 14

@@ -1,0 +1,39 @@
+id: 205
+name: "Nosferatu Nightmare"
+splat: vampire
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 3
+  stamina: 4
+  intelligence: 3
+  wits: 4
+  resolve: 4
+  presence: 2
+  manipulation: 3
+  composure: 3
+
+skills:
+  brawl: 3
+  weaponry: 0
+  firearms: 0
+  athletics: 2
+  stealth: 3
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+vampire:
+  blood_potency: 2
+  celerity: 0
+  vigor: 0
+  resilience: 2
+  nightmare: 3

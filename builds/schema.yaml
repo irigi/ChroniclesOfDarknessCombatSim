@@ -1,0 +1,112 @@
+# JSON Schema for Chronicles of Darkness build definitions.
+# Validate with jsonschema: jsonschema.validate(build_dict, schema)
+
+$schema: "https://json-schema.org/draft/2020-12/schema"
+type: object
+required: [id, name, splat, attributes, skills]
+additionalProperties: false
+
+properties:
+  id:
+    type: integer
+    minimum: 1
+
+  name:
+    type: string
+    minLength: 1
+
+  splat:
+    type: string
+    enum: [mortal, vampire, werewolf, changeling]
+
+  size:
+    type: integer
+    minimum: 1
+    maximum: 10
+    default: 5
+
+  attributes:
+    type: object
+    required: [strength, dexterity, stamina, intelligence, wits, resolve, presence, manipulation, composure]
+    properties:
+      strength:     {type: integer, minimum: 1, maximum: 10}
+      dexterity:    {type: integer, minimum: 1, maximum: 10}
+      stamina:      {type: integer, minimum: 1, maximum: 10}
+      intelligence: {type: integer, minimum: 1, maximum: 10}
+      wits:         {type: integer, minimum: 1, maximum: 10}
+      resolve:      {type: integer, minimum: 1, maximum: 10}
+      presence:     {type: integer, minimum: 1, maximum: 10}
+      manipulation: {type: integer, minimum: 1, maximum: 10}
+      composure:    {type: integer, minimum: 1, maximum: 10}
+
+  skills:
+    type: object
+    properties:
+      brawl:    {type: integer, minimum: 0, maximum: 5}
+      weaponry: {type: integer, minimum: 0, maximum: 5}
+      firearms: {type: integer, minimum: 0, maximum: 5}
+      athletics:{type: integer, minimum: 0, maximum: 5}
+      stealth:  {type: integer, minimum: 0, maximum: 5}
+
+  weapon:
+    type: object
+    properties:
+      damage_mod:        {type: integer, minimum: -5, maximum: 10}
+      damage_type:       {type: string, enum: [bashing, lethal, aggravated]}
+      initiative_penalty:{type: integer, minimum: -10, maximum: 0}
+      is_ranged:         {type: boolean}
+      is_silver:         {type: boolean}
+      is_fire:           {type: boolean}
+      is_sunlight:       {type: boolean}
+
+  armor:
+    type: object
+    properties:
+      general:   {type: integer, minimum: 0, maximum: 5}
+      ballistic: {type: integer, minimum: 0, maximum: 5}
+
+  # Combat merits (all optional; dots 0 = absent)
+  merits:
+    type: object
+    additionalProperties: false
+    properties:
+      iron_skin:           {type: integer, minimum: 0, maximum: 4}
+      defensive_combat:    {type: integer, minimum: 0, maximum: 1}
+      fast_reflexes:       {type: integer, minimum: 0, maximum: 2}
+      fighting_finesse:    {type: integer, minimum: 0, maximum: 2}
+      martial_arts_lethal: {type: integer, minimum: 0, maximum: 1}
+      street_fighting:     {type: integer, minimum: 0, maximum: 1}
+      iron_stamina:        {type: integer, minimum: 0, maximum: 3}
+      brawling_dodge:      {type: integer, minimum: 0, maximum: 1}
+
+  # Splat-specific sections (only the section matching splat is used)
+  vampire:
+    type: object
+    required: [blood_potency]
+    properties:
+      blood_potency: {type: integer, minimum: 0, maximum: 10}
+      celerity:      {type: integer, minimum: 0, maximum: 5}
+      vigor:         {type: integer, minimum: 0, maximum: 5}
+      resilience:    {type: integer, minimum: 0, maximum: 5}
+      protean:       {type: integer, minimum: 0, maximum: 5}
+      nightmare:     {type: integer, minimum: 0, maximum: 5}
+      dominate:      {type: integer, minimum: 0, maximum: 5}
+
+  werewolf:
+    type: object
+    required: [primal_urge]
+    properties:
+      primal_urge: {type: integer, minimum: 1, maximum: 10}
+      purity:      {type: integer, minimum: 0, maximum: 5}
+      glory:       {type: integer, minimum: 0, maximum: 5}
+      cunning:     {type: integer, minimum: 0, maximum: 5}
+      honor:       {type: integer, minimum: 0, maximum: 5}
+      wisdom:      {type: integer, minimum: 0, maximum: 5}
+
+  changeling:
+    type: object
+    required: [wyrd]
+    properties:
+      wyrd:        {type: integer, minimum: 1, maximum: 10}
+      glamour_max: {type: integer, minimum: 1, maximum: 30}
+      seeming:     {type: string, enum: [Beast, Darkling, Elemental, Fairest, Ogre, Wizened]}

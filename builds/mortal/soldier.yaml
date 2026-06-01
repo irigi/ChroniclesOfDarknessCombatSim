@@ -1,0 +1,32 @@
+id: 102
+name: "Mortal Soldier"
+splat: mortal
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 4
+  stamina: 3
+  intelligence: 2
+  wits: 3
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 2
+  weaponry: 0
+  firearms: 4
+  athletics: 3
+  stealth: 2
+
+weapon:
+  damage_mod: 2
+  damage_type: lethal
+  initiative_penalty: 0
+  is_ranged: true
+
+armor:
+  general: 2
+  ballistic: 3

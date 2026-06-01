@@ -1,0 +1,39 @@
+id: 203
+name: "Gangrel Vigor Brute"
+splat: vampire
+size: 5
+
+# Offensive brawler with Vigor for raw damage; minimal Celerity for balanced fights
+attributes:
+  strength: 4
+  dexterity: 2
+  stamina: 3
+  intelligence: 2
+  wits: 2
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 5
+  weaponry: 0
+  firearms: 0
+  athletics: 1
+  stealth: 1
+
+weapon:
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+vampire:
+  blood_potency: 2
+  celerity: 1
+  vigor: 3
+  resilience: 0

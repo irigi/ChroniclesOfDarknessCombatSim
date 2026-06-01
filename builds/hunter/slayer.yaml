@@ -1,0 +1,33 @@
+id: 501
+name: "Hunter Slayer (Silver Blade)"
+splat: mortal
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 4
+  stamina: 3
+  intelligence: 3
+  wits: 4
+  resolve: 4
+  presence: 2
+  manipulation: 2
+  composure: 4
+
+skills:
+  brawl: 3
+  weaponry: 4
+  firearms: 2
+  athletics: 3
+  stealth: 2
+
+weapon:
+  damage_mod: 1
+  damage_type: lethal
+  initiative_penalty: -1
+  is_ranged: false
+  is_silver: true
+
+armor:
+  general: 1
+  ballistic: 2

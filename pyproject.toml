@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin>=1.7,<2"]
+build-backend = "maturin"
+
+[project]
+name = "cod_sim"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "torch>=2.3",
+  "fastapi>=0.111",
+  "uvicorn[standard]>=0.30",
+  "pyyaml>=6",
+  "jsonschema>=4",
+  "gymnasium>=0.29",
+]
+
+[tool.maturin]
+python-source = "python"
+features = ["pyo3/extension-module"]
+manifest-path = "cod_sim/Cargo.toml"

@@ -1,0 +1,38 @@
+id: 202
+name: "Ventrue Resilience Tank"
+splat: vampire
+size: 5
+
+attributes:
+  strength: 3
+  dexterity: 2
+  stamina: 4
+  intelligence: 3
+  wits: 3
+  resolve: 4
+  presence: 3
+  manipulation: 3
+  composure: 3
+
+skills:
+  brawl: 3
+  weaponry: 3
+  firearms: 0
+  athletics: 2
+  stealth: 0
+
+weapon:
+  damage_mod: 1
+  damage_type: lethal
+  initiative_penalty: -1
+  is_ranged: false
+
+armor:
+  general: 2
+  ballistic: 0
+
+vampire:
+  blood_potency: 3
+  celerity: 0
+  vigor: 1
+  resilience: 3

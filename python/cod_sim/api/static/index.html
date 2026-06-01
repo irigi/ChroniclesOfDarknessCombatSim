@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoD Combat Simulator</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <h1>Chronicles of Darkness — Combat Simulator</h1>
+  <nav>
+    <button class="active" data-panel="leaderboard">Leaderboard</button>
+    <button data-panel="combat">Combat Simulator</button>
+  </nav>
+  <span id="status-bar">loading…</span>
+</header>
+
+<main>
+
+  <!-- ── Leaderboard panel ────────────────────────────────────────── -->
+  <div id="panel-leaderboard" class="panel active">
+    <div class="filters">
+      <label>Splat filter:</label>
+      <select id="filter-splat">
+        <option value="">All splats</option>
+        <option value="mortal">Mortal</option>
+        <option value="vampire">Vampire</option>
+        <option value="werewolf">Werewolf</option>
+        <option value="changeling">Changeling</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Build</th>
+          <th>Splat</th>
+          <th>Rating</th>
+          <th>RD</th>
+          <th>Matches</th>
+        </tr>
+      </thead>
+      <tbody id="lb-body">
+        <tr><td colspan="6" style="color:var(--muted);padding:1rem">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Combat Simulator panel ──────────────────────────────────── -->
+  <div id="panel-combat" class="panel">
+
+    <div class="combat-setup">
+      <div class="build-card">
+        <h3>Team 0 (blue)</h3>
+        <select id="build-a"></select>
+        <div class="build-stats" id="stats-a"></div>
+      </div>
+      <div class="build-card">
+        <h3>Team 1 (red)</h3>
+        <select id="build-b"></select>
+        <div class="build-stats" id="stats-b"></div>
+      </div>
+    </div>
+
+    <div class="combat-controls">
+      <label>Seed: <input id="seed-input" type="number" class="seed-input" value="0" min="0"></label>
+      <label>Delay (ms): <input id="delay-input" type="number" class="seed-input delay-input" value="120" min="0" max="2000"></label>
+      <button id="btn-run" class="btn btn-outline">Run (instant)</button>
+      <button id="btn-stream" class="btn">▶ Stream</button>
+      <button id="btn-stop" class="btn" style="display:none">■ Stop</button>
+    </div>
+
+    <div id="combat-output">
+      <div id="combat-header" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border)">
+        <div class="combatant-header" style="color:var(--muted)">Select builds and run a combat.</div>
+        <div class="combatant-header"></div>
+      </div>
+      <div id="stream-status"></div>
+      <div id="combat-log"></div>
+    </div>
+
+  </div><!-- /panel-combat -->
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
