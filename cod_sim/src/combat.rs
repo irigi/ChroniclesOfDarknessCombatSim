@@ -485,13 +485,18 @@ impl CombatState {
             self.characters[actor_idx].conditions.ogre_debuffed = false;
         }
 
-        // Subtract target defense (all attacks — CoD 2e applies defense to ranged too)
-        {
+        // Defense vs Firearms: CofD 2e core p.88 — "Defense does not apply against Firearms
+        // attacks." Melee/thrown attacks subtract full Defense; Firearms attacks skip it.
+        // Exception: Celerity (VtR 2e) — vampire's Celerity dots impose a direct penalty on
+        // incoming Firearms attacks even though normal Defense doesn't apply.
+        if !build.weapon.is_ranged {
             let target_def = self.characters[target_idx].defense_remaining as i8;
             pool -= target_def;
             if self.characters[target_idx].defense_remaining > 0 {
                 self.characters[target_idx].defense_remaining -= 1;
             }
+        } else if let SplatBuild::Vampire { disciplines, .. } = &self.builds[target_idx].splat_data {
+            pool -= disciplines.celerity as i8;
         }
 
         // Choose dice rule: Killer Instinct = 8-again, otherwise 10-again
@@ -1248,6 +1253,64 @@ mod tests {
         let base_def = vamp.base_defense();
         let actual_def = state.characters[0].defense_base;
         assert_eq!(actual_def, base_def + 3, "Celerity 3 should add 3 to defense");
+    }
+
+    #[test]
+    fn celerity_penalises_firearms_attacker() {
+        // VtR 2e: "If a Firearms attack denies her normal Defense, the attacker still
+        // takes a penalty on his attack equal to the vampire's dots in Celerity."
+        // A mortal with a ranged weapon attacks a Celerity-3 vampire many times.
+        // The expected success count should be measurably lower than against a
+        // Celerity-0 vampire of the same stats.
+        use crate::action::{Action, encode_action};
+
+        let make_gunner = |id: u32| -> BuildDefinition {
+            BuildDefinition {
+                id, name: format!("Gunner {}", id),
+                splat: crate::character::Splat::Mortal,
+                attributes: Attributes::new(3, 4, 3, 2, 3, 2, 2, 2, 2),
+                skills: CombatSkills { brawl: 0, weaponry: 0, firearms: 4, athletics: 2, stealth: 0 },
+                weapon: WeaponProfile {
+                    damage_mod: 2, damage_type: DamageType::Lethal,
+                    initiative_penalty: 0, is_ranged: true,
+                    is_silver: false, is_fire: false, is_sunlight: false,
+                },
+                armor: ArmorProfile::none(), splat_data: SplatBuild::Mortal,
+                size: 5, merits: HashMap::new(),
+            }
+        };
+
+        let attack_action = encode_action(Action::Attack { target_idx: 1, spend_willpower: false });
+
+        let mut damage_no_cel = 0u32;
+        let mut damage_cel3   = 0u32;
+        let n = 2000u32;
+
+        for seed in 0..n {
+            // Gunner (team 0) vs Celerity-0 vampire (team 1)
+            let vamp0 = make_vampire(10, 3, 3, 4, 2, 1, 0, 0, 0);
+            let mut state = CombatState::new(vec![make_gunner(1), vamp0], vec![0, 1], seed as u64);
+            state.step(attack_action);
+            let hp = state.characters[1].health.count(DamageType::Bashing) as u32
+                   + state.characters[1].health.count(DamageType::Lethal) as u32
+                   + state.characters[1].health.count(DamageType::Aggravated) as u32;
+            damage_no_cel += hp;
+
+            // Gunner (team 0) vs Celerity-3 vampire (team 1)
+            let vamp3 = make_vampire(20, 3, 3, 4, 2, 1, 3, 0, 0);
+            let mut state = CombatState::new(vec![make_gunner(2), vamp3], vec![0, 1], seed as u64);
+            state.step(attack_action);
+            let hp = state.characters[1].health.count(DamageType::Bashing) as u32
+                   + state.characters[1].health.count(DamageType::Lethal) as u32
+                   + state.characters[1].health.count(DamageType::Aggravated) as u32;
+            damage_cel3 += hp;
+        }
+
+        assert!(
+            damage_no_cel > damage_cel3,
+            "Celerity-3 vampire should take less damage from firearms than Celerity-0 \
+             (no_cel={damage_no_cel} vs cel3={damage_cel3})"
+        );
     }
 
     #[test]
