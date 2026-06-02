@@ -485,8 +485,8 @@ impl CombatState {
             self.characters[actor_idx].conditions.ogre_debuffed = false;
         }
 
-        // Subtract target defense (melee/thrown only)
-        if !build.weapon.is_ranged {
+        // Subtract target defense (all attacks — CoD 2e applies defense to ranged too)
+        {
             let target_def = self.characters[target_idx].defense_remaining as i8;
             pool -= target_def;
             if self.characters[target_idx].defense_remaining > 0 {

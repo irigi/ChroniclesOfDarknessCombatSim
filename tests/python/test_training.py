@@ -312,8 +312,9 @@ class TestShortTraining:
         cfg = PPOConfig(n_envs=4, rollout_len=8, checkpoint_every_steps=10_000,
                         snapshot_every_steps=10_000, log_every_steps=10_000)
         trainer = SelfPlayTrainer(_reg(), config=cfg, checkpoint_dir=tmp_path, resume=False)
-        win_rate = trainer.evaluate_vs_random(n_episodes=20)
-        assert 0.0 <= win_rate <= 1.0
+        overall, decided = trainer.evaluate_vs_random(n_episodes=20)
+        assert 0.0 <= overall <= 1.0
+        assert 0.0 <= decided <= 1.0
 
     def test_trained_policy_beats_random_significantly(self):  # noqa: F811
         import random

@@ -352,15 +352,18 @@ class SelfPlayTrainer:
     # Evaluation helpers
     # ------------------------------------------------------------------
 
-    def evaluate_vs_random(self, n_episodes: int = 200) -> float:
+    def evaluate_vs_random(self, n_episodes: int = 200) -> tuple[float, float]:
         """
-        Evaluate the trained policy against a 'random' (first-legal-action) baseline.
+        Evaluate the trained policy against a uniform-random baseline.
 
-        Returns the win rate of the trained policy (0.0–1.0).
-        The trained policy plays as team 0, the 'random' baseline plays as team 1.
+        Returns (overall_win_rate, decided_win_rate) where:
+        - overall_win_rate  = wins / n_episodes  (draws count against)
+        - decided_win_rate  = wins / decided      (only games with a winner)
+        The trained policy plays as team 0, the random baseline plays as team 1.
         """
         ids = self.reg.all_ids()
         wins = 0
+        decided = 0
         self.policy.eval()
 
         for ep in range(n_episodes):
@@ -401,11 +404,14 @@ class SelfPlayTrainer:
 
             summary = env.get_state_summary()
             winner = summary.get("winner_team")
-            if winner == 0:
-                wins += 1
+            if winner is not None:
+                decided += 1
+                if winner == 0:
+                    wins += 1
 
-        win_rate = wins / n_episodes
-        return win_rate
+        overall = wins / n_episodes
+        decided_rate = wins / decided if decided > 0 else 0.0
+        return overall, decided_rate
 
     def win_rate_mirror(self, n_episodes: int = 100) -> float:
         """

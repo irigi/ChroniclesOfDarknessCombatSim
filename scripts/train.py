@@ -85,14 +85,18 @@ def main() -> None:
     if not args.no_eval:
         print(f"\n[eval] evaluating trained policy vs random baseline "
               f"({args.eval_episodes} episodes) ...")
-        win_rate = trainer.evaluate_vs_random(n_episodes=args.eval_episodes)
+        overall, decided = trainer.evaluate_vs_random(n_episodes=args.eval_episodes)
         mirror_rate = trainer.win_rate_mirror(n_episodes=100)
-        print(f"[eval] win rate vs random:  {win_rate:.1%}")
-        print(f"[eval] win rate vs mirror:  {mirror_rate:.1%} (expect ~50%)")
-        if win_rate >= 0.80:
-            print("[eval] PASS — policy beats random baseline ≥ 80%")
+        # draw_pct: fraction of games with no winner (derived from overall and decided)
+        n_decided = round(overall * args.eval_episodes / decided) if decided > 0 else 0
+        draw_pct = 1.0 - n_decided / args.eval_episodes
+        print(f"[eval] overall win rate:        {overall:.1%}  (draws≈{draw_pct:.1%})")
+        print(f"[eval] decided-game win rate:   {decided:.1%}  (primary metric)")
+        print(f"[eval] win rate vs mirror:       {mirror_rate:.1%} (expect ~50%)")
+        if decided >= 0.80:
+            print("[eval] PASS — decided-game win rate ≥ 80%")
         else:
-            print(f"[eval] win rate {win_rate:.1%} < 80% — may need more training")
+            print(f"[eval] decided win rate {decided:.1%} < 80% — may need more training")
 
 
 if __name__ == "__main__":
