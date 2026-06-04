@@ -115,9 +115,9 @@ class TestPhase7BuildRegistry:
         from cod_sim.cod_sim import OBS_PER_CHAR
         assert OBS_PER_CHAR == 30, f"OBS_PER_CHAR should be 30, got {OBS_PER_CHAR}"
 
-    def test_action_space_is_104(self):
+    def test_action_space_is_120(self):
         from cod_sim.cod_sim import ACTION_SPACE_SIZE
-        assert ACTION_SPACE_SIZE == 104, f"ACTION_SPACE_SIZE should be 104, got {ACTION_SPACE_SIZE}"
+        assert ACTION_SPACE_SIZE == 120, f"ACTION_SPACE_SIZE should be 120, got {ACTION_SPACE_SIZE}"
 
     def test_all_new_builds_load(self):
         reg = self._reg()

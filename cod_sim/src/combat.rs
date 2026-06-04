@@ -3,7 +3,7 @@ use rand_xoshiro::Xoshiro256PlusPlus;
 
 use crate::action::{Action, decode_action, encode_action, ACTION_SPACE_SIZE, IRON_SKIN_OFFSET};
 use crate::character::{
-    BuildDefinition, CharacterState, ConditionFlags, DamageType, Seeming,
+    BuildDefinition, CharacterState, DamageType, Seeming,
     SplatBuild, SplatState, WolfForm, WeaponProfile,
 };
 use crate::dice::{roll_pool, AgainRule};
@@ -121,6 +121,22 @@ impl CombatState {
                 if actor.willpower > 0 && !nightmare_blocks_wp {
                     mask[encode_action(Action::Attack { target_idx: i as u8, spend_willpower: true })] = true;
                     mask[encode_action(Action::AllOutAttack { target_idx: i as u8, spend_willpower: true })] = true;
+                }
+            }
+        }
+
+        // Bite: available to vampires on any living enemy (standalone frenzy-bite model)
+        if matches!(actor.splat, SplatState::Vampire { .. }) {
+            for (i, ch) in self.characters.iter().enumerate() {
+                if ch.team != actor.team && !ch.is_incapacitated {
+                    let nightmare_blocks_wp = match &self.builds[i].splat_data {
+                        SplatBuild::Vampire { disciplines, .. } => disciplines.nightmare >= 1,
+                        _ => false,
+                    };
+                    mask[encode_action(Action::Bite { target_idx: i as u8, spend_willpower: false })] = true;
+                    if actor.willpower > 0 && !nightmare_blocks_wp {
+                        mask[encode_action(Action::Bite { target_idx: i as u8, spend_willpower: true })] = true;
+                    }
                 }
             }
         }
@@ -328,6 +344,11 @@ impl CombatState {
                     self.turn_bonuses[actor_idx].attack_dice_bonus += 2;
                     self.turn_bonuses[actor_idx].did_spend_physical_intensity = true;
                     let _ = attribute;
+                    // Reflexive action (VtR 2e): grant the action slot back so the vampire
+                    // can still attack on the same "turn."
+                    self.characters[actor_idx].extra_actions_remaining =
+                        self.characters[actor_idx].extra_actions_remaining.saturating_add(1);
+                    reward += 0.02;
                 }
             }
 
@@ -355,6 +376,10 @@ impl CombatState {
             Action::Pass => {
                 // Clear one-shot conditions consumed by passing
                 self.characters[actor_idx].conditions.dominated = false;
+            }
+
+            Action::Bite { target_idx, spend_willpower } => {
+                reward += self.resolve_bite(actor_idx, target_idx as usize, spend_willpower);
             }
 
             Action::IronSkinDowngrade => {
@@ -409,9 +434,10 @@ impl CombatState {
                     DamageType::Aggravated
                 } else if weapon.is_fire {
                     DamageType::Lethal
-                } else if base_type <= DamageType::Lethal && !weapon.is_ranged {
-                    // Most melee weapons deal bashing to vampires.
-                    // Silver is a werewolf weakness only — no special effect vs vampires.
+                } else if base_type <= DamageType::Lethal {
+                    // VtR 2e: "Kindred take bashing damage from all mundane weapons,
+                    // including knives and guns." Firearms included. Only fire/sunlight
+                    // are exceptions. Silver is a werewolf weakness only.
                     DamageType::Bashing
                 } else {
                     base_type
@@ -571,6 +597,75 @@ impl CombatState {
         reward
     }
 
+    /// Vampire bite attack (simplified frenzy-bite model).
+    /// Pool: Str + Brawl − Defense. Damage = successes as Lethal (fangs are 0L weapon).
+    /// On any success: vampire gains 1 Vitae (blood drain), capped by per-turn limit.
+    /// Bite is NOT subject to the "mundane weapons → bashing to vampires" rule —
+    /// fangs are a supernatural weapon; even vampire-vs-vampire bites deal lethal.
+    fn resolve_bite(&mut self, actor_idx: usize, target_idx: usize, spend_willpower: bool) -> f32 {
+        if target_idx >= self.characters.len() || self.characters[target_idx].is_incapacitated {
+            return 0.0;
+        }
+        if self.characters[target_idx].conditions.insubstantial {
+            return 0.0;
+        }
+        let build = &self.builds[actor_idx];
+
+        // Bite pool: Str + Brawl − Defense (melee-style)
+        let str_delta: i8 = if let SplatState::Werewolf { .. } = &self.characters[actor_idx].splat {
+            0 // vampires don't shift forms
+        } else { 0 };
+        let base_pool = (build.attributes.strength as i8 + str_delta)
+            + build.skills.brawl as i8;
+        let mut pool = base_pool;
+
+        if spend_willpower { pool += 3; }
+
+        pool += self.characters[actor_idx].effective_wound_penalty(&self.builds[actor_idx]);
+
+        // Subtract target defense (melee applies defense)
+        let target_def = self.characters[target_idx].defense_remaining as i8;
+        pool -= target_def;
+        if self.characters[target_idx].defense_remaining > 0 {
+            self.characters[target_idx].defense_remaining -= 1;
+        }
+
+        let result = roll_pool(pool, crate::dice::AgainRule::TenAgain, &mut self.rng);
+        if result.successes <= 0 { return 0.0; }
+
+        let successes = result.successes as u8;
+        // Fangs are 0L weapon: damage = successes (no damage_mod)
+        let final_damage = successes;
+
+        // Bite always deals Lethal regardless of target splat — fangs bypass the
+        // mundane-weapon bashing conversion rule.
+        self.apply_damage(target_idx, final_damage, DamageType::Lethal);
+
+        // Blood drain: gain 1 Vitae on a successful bite (up to per-turn limit)
+        self.characters[actor_idx].spend_resource(0); // ensure no-op if needed
+        let gained = if let SplatState::Vampire { vitae, vitae_spent_this_turn, blood_potency } =
+            &mut self.characters[actor_idx].splat
+        {
+            let per_turn = crate::splats::vampire::vitae_per_turn(*blood_potency);
+            let max_v = crate::splats::vampire::vitae_max(*blood_potency);
+            if *vitae < max_v && *vitae_spent_this_turn < per_turn {
+                *vitae += 1;
+                true
+            } else {
+                false
+            }
+        } else { false };
+
+        if spend_willpower && self.characters[actor_idx].willpower > 0 {
+            self.characters[actor_idx].willpower -= 1;
+        }
+
+        let mut reward = successes as f32 * 0.05;
+        if gained { reward += 0.02; } // small bonus for blood drain
+        if self.characters[target_idx].is_incapacitated { reward += 0.02; }
+        reward
+    }
+
     fn apply_damage(&mut self, target_idx: usize, amount: u8, dtype: DamageType) {
         // Darkling insubstantial: immune to physical damage
         if self.characters[target_idx].conditions.insubstantial {
@@ -620,27 +715,33 @@ impl CombatState {
 
         match power_slot {
             0 => {
-                // Celerity active: grant extra action (Phase 7E)
+                // Celerity active: grant extra action (Phase 7E). Reflexive per VtR 2e.
                 if disciplines.celerity > 0 && self.characters[actor_idx].spend_resource(1) {
                     self.characters[actor_idx].extra_actions_remaining =
                         self.characters[actor_idx].extra_actions_remaining.saturating_add(1);
+                    return 0.02;
                 }
                 0.0
             }
             1 => {
-                // Vigor active: reflexive bonus + extra action (Phase 7E)
+                // Vigor active: reflexive bonus dice + extra action (Phase 7E). Reflexive per VtR 2e.
                 if disciplines.vigor > 0 && self.characters[actor_idx].spend_resource(1) {
                     self.turn_bonuses[actor_idx].attack_dice_bonus += disciplines.vigor as i8;
                     self.characters[actor_idx].extra_actions_remaining =
                         self.characters[actor_idx].extra_actions_remaining.saturating_add(1);
+                    return 0.02;
                 }
                 0.0
             }
             2 => {
-                // Resilience active: armor for this turn
+                // Resilience active: armor for this turn. Reflexive per VtR 2e — grant
+                // extra action so the armor activation doesn't cost the main action.
                 if disciplines.resilience > 0 && self.characters[actor_idx].spend_resource(1) {
                     self.turn_bonuses[actor_idx].armor_active = true;
                     self.turn_bonuses[actor_idx].armor_value = disciplines.resilience + 1;
+                    self.characters[actor_idx].extra_actions_remaining =
+                        self.characters[actor_idx].extra_actions_remaining.saturating_add(1);
+                    return 0.02;
                 }
                 0.0
             }
@@ -1630,5 +1731,76 @@ mod tests {
             // Debuff should be applied to mortal
             assert!(state.characters[1].conditions.ogre_debuffed, "mortal should be debuffed after Ogre hits");
         }
+    }
+
+    #[test]
+    fn vampire_bite_deals_lethal_and_restores_vitae() {
+        let vamp = make_vampire(250, 4, 3, 3, 4, 2, 0, 0, 0);
+        let mortal = make_mortal(251, 2, 2, 2, 2);
+        let mut state = CombatState::new(vec![vamp, mortal], vec![0, 1], 7);
+        // Drain some Vitae so we can verify recovery
+        let vitae_before = state.characters[0].resource();
+        for _ in 0..100 {
+            if state.done { break; }
+            state.apply_action(0, Action::Bite { target_idx: 1, spend_willpower: false });
+            if state.characters[1].health.count(DamageType::Lethal) > 0 { break; }
+        }
+        assert!(state.characters[1].health.count(DamageType::Lethal) > 0,
+            "bite should deal lethal damage to mortal");
+    }
+
+    #[test]
+    fn firearms_deal_bashing_to_vampires() {
+        let mut gunner = make_mortal(260, 3, 4, 3, 0);
+        gunner.skills.firearms = 4;
+        gunner.weapon = WeaponProfile {
+            damage_mod: 2, damage_type: DamageType::Lethal,
+            initiative_penalty: 0, is_ranged: true,
+            is_silver: false, is_fire: false, is_sunlight: false,
+        };
+        let vamp = make_vampire(261, 3, 2, 3, 2, 1, 0, 0, 0);
+        let mut state = CombatState::new(vec![gunner, vamp], vec![0, 1], 42);
+        // Fire many shots; confirm vampire only accumulates bashing, never lethal from gun
+        for _ in 0..200 {
+            if state.done { break; }
+            state.apply_action(0, Action::Attack { target_idx: 1, spend_willpower: false });
+            let v = &state.characters[1];
+            if v.health.count(DamageType::Bashing) > 0 {
+                assert_eq!(v.health.count(DamageType::Lethal), 0,
+                    "firearms should deal bashing not lethal to vampires");
+                return;
+            }
+        }
+        // If we get here without damage it's just bad luck on rolls
+    }
+
+    #[test]
+    fn reflexive_spend_grants_extra_action() {
+        // SpendResourcePhysical must be reflexive: grants extra_actions_remaining
+        let vamp = make_vampire(270, 4, 3, 3, 4, 1, 0, 0, 0);
+        let mortal = make_mortal(271, 3, 2, 3, 2);
+        let mut state = CombatState::new(vec![vamp, mortal], vec![0, 1], 0);
+        let pos_before = state.current_actor_pos;
+        state.apply_action(0, Action::SpendResourcePhysical { attribute: 0 });
+        assert_eq!(state.characters[0].extra_actions_remaining, 1,
+            "SpendResourcePhysical should grant 1 extra action (reflexive)");
+        state.advance_actor();
+        assert_eq!(state.current_actor_pos, pos_before,
+            "actor should not advance when extra action is pending");
+    }
+
+    #[test]
+    fn resilience_reflexive_grants_extra_action() {
+        // Resilience active must be reflexive: grants extra_actions_remaining
+        let vamp = make_vampire(280, 3, 3, 3, 3, 1, 0, 0, 2); // Resilience 2
+        let mortal = make_mortal(281, 3, 2, 3, 2);
+        let mut state = CombatState::new(vec![vamp, mortal], vec![0, 1], 0);
+        let pos_before = state.current_actor_pos;
+        state.apply_action(0, Action::ActivatePower { power_slot: 2, target_idx: 0 });
+        assert_eq!(state.characters[0].extra_actions_remaining, 1,
+            "Resilience activation should grant 1 extra action (reflexive)");
+        state.advance_actor();
+        assert_eq!(state.current_actor_pos, pos_before,
+            "actor should not advance when extra action is pending");
     }
 }

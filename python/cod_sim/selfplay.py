@@ -32,7 +32,7 @@ class PPOConfig:
     lam: float = 0.95               # GAE lambda
     clip_eps: float = 0.2
     value_coef: float = 0.5
-    entropy_coef: float = 0.01
+    entropy_coef: float = 0.05  # raised from 0.01; encourages discipline exploration
     max_grad_norm: float = 0.5
     ppo_epochs: int = 4
     minibatch_size: int = 512

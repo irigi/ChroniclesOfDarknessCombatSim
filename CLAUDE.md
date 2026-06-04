@@ -59,14 +59,16 @@ source ~/.cargo/env && cargo check -p cod_sim
 Flat `f32` vector: `n_chars × 16 + 3`. Per character (16 floats): health ratios (B/L/A/empty), wound penalty, willpower/resource/defense ratios, incap flag, splat one-hot (4), strength. Global (3): turn ratio, ally/enemy alive counts. Always from POV of current actor (self at slot 0, allies, then enemies).
 
 ### Action Space
-Discrete, fixed size `ACTION_SPACE_SIZE = MAX_TARGETS×2 + MAX_POWER_SLOTS×MAX_TARGETS + 7`. Encodes Attack × target × willpower, ActivatePower × slot × target, SpendResourcePhysical, HealWithVitae, RegenerateEssence, FullDefense, Pass.
+Discrete, fixed size `ACTION_SPACE_SIZE = 120`. Layout: Attack×8×2 [0..16), AllOutAttack×8×2 [16..32), ActivatePower×8×8 [32..96), SpendResourcePhysical×3 [96..99), HealWithVitae [99], RegenerateEssence [100], FullDefense [101], Pass [102], IronSkinDowngrade [103], Bite×8×2 [104..120).
 
 ### Vampire Rule Notes
-- Most weapons deal **bashing** to vampires (not lethal). Fire = lethal, sunlight = aggravated.
+- **All** mundane weapons (melee + firearms) deal **bashing** to vampires. Fire = lethal, sunlight = aggravated. (VtR 2e: "Kindred take bashing damage from all mundane weapons, including knives and guns.")
+- **Bite** (fangs): Str+Brawl−Defense pool, deals **lethal** equal to successes (0L weapon), vampire gains 1 Vitae on hit. Standalone action (simplified frenzy-bite model; strict RAW requires grapple first).
 - **Torpor** when last health box = lethal. **Final Death** when last = aggravated. Conscious with all bashing.
-- Celerity persistent: +dots to Defense. Active (1 Vitae/effect): jump Initiative, interrupt, speed boost.
-- Vigor persistent: +dots to Strength. Active (1 Vitae/effect): +dots as weapon bonus to attacks.
-- Resilience persistent: +dots to Stamina (health). Active: (Resilience+1) armor for turn.
+- Celerity active (1 Vitae): **reflexive** — grants extra action immediately, net 0 action slots spent.
+- Vigor active (1 Vitae): **reflexive** — +Vigor dice bonus + extra action (net 0 action slots).
+- Resilience active (1 Vitae): **reflexive** — (Resilience+1) armor for turn + extra action (net 0 slots).
+- SpendResourcePhysical (1 Vitae): **reflexive** — +2 attack dice + extra action (net 0 action slots).
 
 ### Werewolf Rule Notes
 - Regenerates 1 bashing per turn (Primal Urge 1). Gauru form: all bashing+lethal per turn.
@@ -83,6 +85,9 @@ Discrete, fixed size `ACTION_SPACE_SIZE = MAX_TARGETS×2 + MAX_POWER_SLOTS×MAX_
 | 4 | ✅ Done | PPO self-play RL: 92% win rate (decided games), 16K steps/sec on CPU |
 | 5 | ✅ Done | Glicko-2 rating: individual builds + team compositions, round-robin tournament |
 | 6 | ✅ Done | FastAPI web UI: leaderboard + combat simulator with SSE live streaming |
+| 7 | ✅ Done | Merit system, discipline expansion, werewolf gifts, changeling seemings, rule accuracy |
+| 8 | ✅ Done | Weapon audit, AllOutAttack, fighting style merits, 5 new builds, ACTION_SPACE_SIZE 88→104 |
+| 9 | ✅ Done | Firearms→bashing to vampires (bug fix), vampire bite action, reflexive disciplines, combat_runner.py offset fix, entropy 0.01→0.05 |
 
 ## Rulebooks
 Source material is in `rulebooks/`. Key files:

@@ -13,17 +13,21 @@ from ..cod_sim import CombatEnv, ACTION_SPACE_SIZE
 
 _MAX_TARGETS      = 8
 _MAX_POWER_SLOTS  = 8
-_POWER_OFFSET     = _MAX_TARGETS * 2            # 16
-_RES_PHYS_OFFSET  = _POWER_OFFSET + _MAX_POWER_SLOTS * _MAX_TARGETS  # 80
-_HEAL_OFFSET      = _RES_PHYS_OFFSET + 3        # 83
-_REGEN_OFFSET     = _HEAL_OFFSET + 1            # 84
-_FULL_DEF_OFFSET  = _REGEN_OFFSET + 1           # 85
-_PASS_OFFSET      = _FULL_DEF_OFFSET + 1        # 86
+_ALL_OUT_OFFSET   = _MAX_TARGETS * 2            # 16
+_POWER_OFFSET     = _MAX_TARGETS * 4            # 32
+_RES_PHYS_OFFSET  = _POWER_OFFSET + _MAX_POWER_SLOTS * _MAX_TARGETS  # 96
+_HEAL_OFFSET      = _RES_PHYS_OFFSET + 3        # 99
+_REGEN_OFFSET     = _HEAL_OFFSET + 1            # 100
+_FULL_DEF_OFFSET  = _REGEN_OFFSET + 1           # 101
+_PASS_OFFSET      = _FULL_DEF_OFFSET + 1        # 102
+_IRON_SKIN_OFFSET = _PASS_OFFSET + 1            # 103
+_BITE_OFFSET      = _IRON_SKIN_OFFSET + 1       # 104
 
 # Vampire power slots: 0=Celerity-jump, 1=Vigor-attack, 2=Resilience-armor
 # Werewolf power slots: 0=Hishu, 1=Dalu, 2=Gauru, 3=Urshul, 4=Urhan
 _WOLF_FORM_NAMES = ["Hishu", "Dalu", "Gauru", "Urshul", "Urhan"]
-_VAMP_POWER_NAMES = ["Celerity (Initiative)", "Vigor (Attack)", "Resilience (Armor)"]
+_VAMP_POWER_NAMES = ["Celerity (Initiative)", "Vigor (Attack)", "Resilience (Armor)",
+                     "Protean (Claws)", "Nightmare (Frighten)", "Dominate (Mesmerize)"]
 
 
 def _describe_action(
@@ -32,12 +36,20 @@ def _describe_action(
     actor_splat: str,
     char_names: list[str],
 ) -> str:
-    if action_idx < _POWER_OFFSET:
+    if action_idx < _ALL_OUT_OFFSET:
         target_idx = action_idx // 2
         spends_wp  = action_idx % 2 == 1
         tname = char_names[target_idx] if target_idx < len(char_names) else f"target {target_idx}"
         wp_str = " (spending Willpower)" if spends_wp else ""
         return f"Attacks {tname}{wp_str}"
+
+    if action_idx < _POWER_OFFSET:
+        rel = action_idx - _ALL_OUT_OFFSET
+        target_idx = rel // 2
+        spends_wp  = rel % 2 == 1
+        tname = char_names[target_idx] if target_idx < len(char_names) else f"target {target_idx}"
+        wp_str = " (spending Willpower)" if spends_wp else ""
+        return f"All-Out Attack on {tname}{wp_str}"
 
     if action_idx < _RES_PHYS_OFFSET:
         rel = action_idx - _POWER_OFFSET
@@ -46,7 +58,7 @@ def _describe_action(
         tname = char_names[target_idx] if target_idx < len(char_names) else f"target {target_idx}"
         if actor_splat == "vampire":
             pname = _VAMP_POWER_NAMES[slot] if slot < len(_VAMP_POWER_NAMES) else f"Power {slot}"
-            return f"Activates {pname} → attacks {tname}"
+            return f"Activates {pname}"
         elif actor_splat == "werewolf":
             form = _WOLF_FORM_NAMES[slot] if slot < len(_WOLF_FORM_NAMES) else f"form {slot}"
             return f"Shapeshifts to {form}"
@@ -55,7 +67,7 @@ def _describe_action(
     if action_idx < _HEAL_OFFSET:
         attr = action_idx - _RES_PHYS_OFFSET
         attr_name = ["Strength", "Dexterity", "Stamina"][attr] if attr < 3 else "attribute"
-        return f"Spends resource for +2 {attr_name} dice"
+        return f"Spends resource for +2 {attr_name} dice (reflexive)"
 
     if action_idx == _HEAL_OFFSET:
         return "Heals with Vitae"
@@ -63,6 +75,17 @@ def _describe_action(
         return "Spends Essence to regenerate lethal damage"
     if action_idx == _FULL_DEF_OFFSET:
         return "Takes Full Defense (doubles defense for the turn)"
+    if action_idx == _PASS_OFFSET:
+        return "Passes"
+    if action_idx == _IRON_SKIN_OFFSET:
+        return "Iron Skin: spends Willpower to downgrade lethal → bashing"
+    if action_idx >= _BITE_OFFSET and action_idx < _BITE_OFFSET + _MAX_TARGETS * 2:
+        rel = action_idx - _BITE_OFFSET
+        target_idx = rel // 2
+        spends_wp  = rel % 2 == 1
+        tname = char_names[target_idx] if target_idx < len(char_names) else f"target {target_idx}"
+        wp_str = " (spending Willpower)" if spends_wp else ""
+        return f"Bites {tname} (Lethal + Vitae drain){wp_str}"
     return "Passes"
 
 

@@ -37,6 +37,13 @@ pub enum Action {
     Pass,
     /// Iron Skin active: spend 1 WP to downgrade 1 (or 2 at ••••) lethal → bashing
     IronSkinDowngrade,
+    /// Vampire bite — fangs deal Lethal equal to successes; vampire gains 1 Vitae on hit.
+    /// Simplified frenzy-bite model (RAW requires grapple first, but for the combat sim
+    /// we use the single instant-action frenzy variant).
+    Bite {
+        target_idx: u8,
+        spend_willpower: bool,
+    },
 }
 
 pub const MAX_TARGETS: usize = 8;
@@ -54,10 +61,11 @@ pub const MAX_POWER_SLOTS: usize = 8;
 ///   [B+5]                                  FullDefense
 ///   [B+6]                                  Pass
 ///   [B+7]                                  IronSkinDowngrade
+///   [B+8..B+8+MAX_TARGETS*2)              Bite × target × willpower (vampire only)
 ///
-/// Total = MAX_TARGETS*4 + MAX_POWER_SLOTS*MAX_TARGETS + 8
+/// Total = MAX_TARGETS*4 + MAX_POWER_SLOTS*MAX_TARGETS + 8 + MAX_TARGETS*2
 pub const ACTION_SPACE_SIZE: usize =
-    MAX_TARGETS * 4 + MAX_POWER_SLOTS * MAX_TARGETS + 8;
+    MAX_TARGETS * 4 + MAX_POWER_SLOTS * MAX_TARGETS + 8 + MAX_TARGETS * 2;
 
 pub const ALL_OUT_ATTACK_OFFSET: usize = MAX_TARGETS * 2;
 const POWER_OFFSET: usize = MAX_TARGETS * 4;
@@ -67,6 +75,7 @@ const REGEN_ESSENCE_OFFSET: usize = HEAL_OFFSET + 1;
 const FULL_DEFENSE_OFFSET: usize = REGEN_ESSENCE_OFFSET + 1;
 const PASS_OFFSET: usize = FULL_DEFENSE_OFFSET + 1;
 pub const IRON_SKIN_OFFSET: usize = PASS_OFFSET + 1;
+pub const BITE_OFFSET: usize = IRON_SKIN_OFFSET + 1;
 
 pub fn encode_action(action: Action) -> usize {
     match action {
@@ -91,6 +100,11 @@ pub fn encode_action(action: Action) -> usize {
         Action::FullDefense => FULL_DEFENSE_OFFSET,
         Action::Pass => PASS_OFFSET,
         Action::IronSkinDowngrade => IRON_SKIN_OFFSET,
+        Action::Bite { target_idx, spend_willpower } => {
+            let t = target_idx as usize;
+            let w = spend_willpower as usize;
+            BITE_OFFSET + t * 2 + w
+        }
     }
 }
 
@@ -122,6 +136,11 @@ pub fn decode_action(idx: usize) -> Option<Action> {
         Some(Action::Pass)
     } else if idx == IRON_SKIN_OFFSET {
         Some(Action::IronSkinDowngrade)
+    } else if idx >= BITE_OFFSET && idx < BITE_OFFSET + MAX_TARGETS * 2 {
+        let rel = idx - BITE_OFFSET;
+        let target_idx = (rel / 2) as u8;
+        let spend_willpower = rel % 2 == 1;
+        Some(Action::Bite { target_idx, spend_willpower })
     } else {
         None
     }
@@ -156,7 +175,7 @@ mod tests {
 
     #[test]
     fn action_space_size_is_correct() {
-        assert_eq!(IRON_SKIN_OFFSET + 1, ACTION_SPACE_SIZE);
+        assert_eq!(BITE_OFFSET + MAX_TARGETS * 2, ACTION_SPACE_SIZE);
     }
 
     #[test]
@@ -177,6 +196,28 @@ mod tests {
         let idx2 = encode_action(b);
         assert!(idx2 < ACTION_SPACE_SIZE);
         assert_eq!(decode_action(idx2), Some(b));
+    }
+
+    #[test]
+    fn encode_decode_bite() {
+        let a = Action::Bite { target_idx: 0, spend_willpower: false };
+        let idx = encode_action(a);
+        assert_eq!(idx, BITE_OFFSET);
+        assert!(idx < ACTION_SPACE_SIZE);
+        assert_eq!(decode_action(idx), Some(a));
+
+        let b = Action::Bite { target_idx: 3, spend_willpower: true };
+        let idx2 = encode_action(b);
+        assert!(idx2 < ACTION_SPACE_SIZE);
+        assert_eq!(decode_action(idx2), Some(b));
+    }
+
+    #[test]
+    fn bite_does_not_overlap_iron_skin() {
+        let bite_idx = encode_action(Action::Bite { target_idx: 0, spend_willpower: false });
+        let iron_idx = encode_action(Action::IronSkinDowngrade);
+        assert_ne!(bite_idx, iron_idx);
+        assert!(bite_idx > iron_idx);
     }
 
     #[test]
