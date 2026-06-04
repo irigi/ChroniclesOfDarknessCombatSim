@@ -108,7 +108,7 @@ impl CombatState {
             return mask;
         }
 
-        // Attack any living enemy
+        // Attack / All-Out Attack any living enemy
         for (i, ch) in self.characters.iter().enumerate() {
             if ch.team != actor.team && !ch.is_incapacitated {
                 // Check Nightmare passive: if the target has Nightmare, WP attacks are blocked
@@ -117,8 +117,10 @@ impl CombatState {
                     _ => false,
                 };
                 mask[encode_action(Action::Attack { target_idx: i as u8, spend_willpower: false })] = true;
+                mask[encode_action(Action::AllOutAttack { target_idx: i as u8, spend_willpower: false })] = true;
                 if actor.willpower > 0 && !nightmare_blocks_wp {
                     mask[encode_action(Action::Attack { target_idx: i as u8, spend_willpower: true })] = true;
+                    mask[encode_action(Action::AllOutAttack { target_idx: i as u8, spend_willpower: true })] = true;
                 }
             }
         }
@@ -296,7 +298,13 @@ impl CombatState {
 
         match action {
             Action::Attack { target_idx, spend_willpower } => {
-                reward += self.resolve_attack(actor_idx, target_idx as usize, spend_willpower);
+                reward += self.resolve_attack(actor_idx, target_idx as usize, spend_willpower, false);
+            }
+
+            Action::AllOutAttack { target_idx, spend_willpower } => {
+                // Sacrifice Defense for +2 attack dice
+                self.characters[actor_idx].defense_remaining = 0;
+                reward += self.resolve_attack(actor_idx, target_idx as usize, spend_willpower, true);
             }
 
             Action::ActivatePower { power_slot, target_idx } => {
@@ -420,7 +428,7 @@ impl CombatState {
         }
     }
 
-    fn resolve_attack(&mut self, actor_idx: usize, target_idx: usize, spend_willpower: bool) -> f32 {
+    fn resolve_attack(&mut self, actor_idx: usize, target_idx: usize, spend_willpower: bool, all_out: bool) -> f32 {
         if target_idx >= self.characters.len() || self.characters[target_idx].is_incapacitated {
             return 0.0;
         }
@@ -454,13 +462,18 @@ impl CombatState {
         };
 
         // Beast seeming or Martial Arts: unarmed attacks deal lethal
+        // (martial_arts_lethal legacy merit OR martial_arts ≥4 = The Hand As Weapon)
         let base_damage_type = if !build.weapon.is_ranged {
             let beast = matches!(&self.characters[actor_idx].splat, SplatState::Changeling { seeming: Seeming::Beast, .. });
-            let martial_arts = build.merit("martial_arts_lethal") > 0;
+            let martial_arts = build.merit("martial_arts_lethal") > 0 || build.merit("martial_arts") >= 4;
             if beast || martial_arts { DamageType::Lethal } else { base_damage_type }
         } else {
             base_damage_type
         };
+        // Martial Arts: Touch of Death (•••••) — unarmed strikes = dmg+2 weapon
+        if !build.weapon.is_ranged && build.merit("martial_arts") >= 5 {
+            damage_mod += 2;
+        }
 
         // Build attack pool
         // Fighting Finesse: use Dex instead of Str for melee
@@ -475,6 +488,7 @@ impl CombatState {
         };
         let mut pool = base_pool + bonus;
         if spend_willpower { pool += 3; }
+        if all_out { pool += 2; }
 
         // Wound penalty (Iron Stamina reduces it)
         pool += self.characters[actor_idx].effective_wound_penalty(&self.builds[actor_idx]);
@@ -529,9 +543,11 @@ impl CombatState {
             3 | 4 => if damage_type == DamageType::Bashing { 2u8 } else { 0 },
             _ => 0,
         };
+        // Martial Arts: Focused Attack (•) — unarmed attacks ignore 1 point of armor
+        let ma_armor_pierce: u8 = if !build.weapon.is_ranged && build.merit("martial_arts") >= 1 { 1 } else { 0 };
         // Armor never reduces aggravated damage
         let armor_reduction = if damage_type == DamageType::Aggravated { 0 } else {
-            passive_armor + active_armor + iron_skin_armor
+            (passive_armor + active_armor + iron_skin_armor).saturating_sub(ma_armor_pierce)
         };
         let final_damage = total_damage.saturating_sub(armor_reduction);
 
@@ -808,7 +824,7 @@ impl CombatState {
                 };
                 if self.characters[actor_idx].spend_resource(2) {
                     self.turn_bonuses[actor_idx].attack_dice_bonus += wyrd;
-                    self.resolve_attack(actor_idx, target_idx, false)
+                    self.resolve_attack(actor_idx, target_idx, false, false)
                 } else { 0.0 }
             }
             _ => 0.0,

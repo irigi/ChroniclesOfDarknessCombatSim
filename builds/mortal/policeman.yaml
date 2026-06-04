@@ -1,0 +1,39 @@
+id: 105
+name: "Mortal Policeman"
+splat: mortal
+size: 5
+
+# Patrol officer or detective: disciplined under stress, trained in restraint
+# and sidearm use, but not militarily optimised for sustained firefights.
+attributes:
+  strength: 2
+  dexterity: 3
+  stamina: 2
+  intelligence: 2
+  wits: 3
+  resolve: 3
+  presence: 3
+  manipulation: 2
+  composure: 4
+
+skills:
+  brawl: 2
+  weaponry: 2
+  firearms: 3
+  athletics: 2
+  stealth: 1
+
+weapon:
+  name: "Light Pistol (Glock 17, 9mm)"
+  damage_mod: 1
+  damage_type: lethal
+  initiative_penalty: 0
+  is_ranged: true
+
+armor:
+  general: 1
+  ballistic: 3
+
+merits:
+  police_tactics: 2
+  fast_reflexes: 1

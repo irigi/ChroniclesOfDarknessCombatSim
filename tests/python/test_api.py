@@ -272,7 +272,11 @@ class TestCombatRunnerUnit:
         ba, bb = reg.get(bid_a), reg.get(bid_b)
 
         ckpt = checkpoint.latest_checkpoint("checkpoints")
-        policy = checkpoint.load(ckpt)[0] if ckpt else None
+        policy = None
+        if ckpt:
+            loaded_policy = checkpoint.load(ckpt)[0]
+            from cod_sim.cod_sim import ACTION_SPACE_SIZE as _ASZ
+            policy = loaded_policy if loaded_policy.action_size == _ASZ else None
 
         log = run_combat(
             builds_json=builds_json,

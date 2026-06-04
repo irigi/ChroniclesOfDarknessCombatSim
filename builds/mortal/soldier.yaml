@@ -22,9 +22,10 @@ skills:
   stealth: 2
 
 weapon:
-  damage_mod: 2
+  name: "Assault Rifle (M4/M16, Steyr-AUG equivalent)"
+  damage_mod: 3
   damage_type: lethal
-  initiative_penalty: 0
+  initiative_penalty: -3
   is_ranged: true
 
 armor:

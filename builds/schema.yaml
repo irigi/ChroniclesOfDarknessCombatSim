@@ -51,6 +51,7 @@ properties:
   weapon:
     type: object
     properties:
+      name:              {type: string}
       damage_mod:        {type: integer, minimum: -5, maximum: 10}
       damage_type:       {type: string, enum: [bashing, lethal, aggravated]}
       initiative_penalty:{type: integer, minimum: -10, maximum: 0}
@@ -70,14 +71,57 @@ properties:
     type: object
     additionalProperties: false
     properties:
+      # ── Passive stat merits ──────────────────────────────────────────────────
+      # quick_draw: Draw/holster weapon as reflexive action; no initiative
+      #   penalty for drawing before attacking.
+      quick_draw:          {type: integer, minimum: 0, maximum: 1}
       iron_skin:           {type: integer, minimum: 0, maximum: 4}
       defensive_combat:    {type: integer, minimum: 0, maximum: 1}
-      fast_reflexes:       {type: integer, minimum: 0, maximum: 2}
+      fast_reflexes:       {type: integer, minimum: 0, maximum: 3}
       fighting_finesse:    {type: integer, minimum: 0, maximum: 2}
       martial_arts_lethal: {type: integer, minimum: 0, maximum: 1}
-      street_fighting:     {type: integer, minimum: 0, maximum: 1}
+      street_fighting:     {type: integer, minimum: 0, maximum: 5}
       iron_stamina:        {type: integer, minimum: 0, maximum: 3}
       brawling_dodge:      {type: integer, minimum: 0, maximum: 1}
+      # ── Fighting style merits (full dot-rated styles) ───────────────────────
+      # martial_arts: •Focused Attack (ignore 1 armor); ••Defensive Strike;
+      #   •••Whirlwind Strike; ••••The Hand As Weapon (lethal unarmed);
+      #   •••••Touch of Death (unarmed = dmg+2). Prereq: Resolve•••,Dex•••
+      martial_arts:        {type: integer, minimum: 0, maximum: 5}
+      # street_fighting covers Duck and Weave(•) through Last-Ditch Effort(•••••).
+      # Already above (kept as 0-5 range).
+      # armed_defense: •Cover the Angles; ••Weak Spot; •••Aggressive Defense;
+      #   ••••Iron Guard; •••••Press the Advantage. Prereq: Dex•••,Weaponry••
+      armed_defense:       {type: integer, minimum: 0, maximum: 5}
+      # firefight: •Shoot First (+Firearms to Initiative when ranged weapon drawn);
+      #   ••Suppressive Fire (apply Defense vs Firearms); •••Secondary Target.
+      #   Prereq: Composure•••,Dex•••,Athletics••,Firearms••
+      firefight:           {type: integer, minimum: 0, maximum: 3}
+      # marksmanship: •Through the Crosshairs; ••Precision Shot; •••A Shot Rings Out;
+      #   ••••Ghost. Prereq: Composure•••,Resolve•••,Firearms••
+      marksmanship:        {type: integer, minimum: 0, maximum: 4}
+      # light_weapons: •Rapidity; ••Thrust; •••Feint; ••••Flurry; •••••Vital Shot.
+      #   Prereq: Wits•••(or Fighting Finesse),Dex•••,Athletics••,Weaponry••
+      light_weapons:       {type: integer, minimum: 0, maximum: 5}
+      # heavy_weapons: •Sure Strike; ••Threat Range; •••Bring the Pain;
+      #   ••••Warding Stance; •••••Rending. Prereq: Sta•••,Str•••,Athletics••,Weaponry••
+      heavy_weapons:       {type: integer, minimum: 0, maximum: 5}
+      # grappling: •Sprawl; ••Takedown; •••Joint Lock.
+      #   Prereq: Sta•••,Str••,Athletics••,Brawl••
+      grappling:           {type: integer, minimum: 0, maximum: 3}
+      # police_tactics: •Compliance Hold (+2 overpowering rolls);
+      #   ••Weapon Retention; •••Speed Cuff. Prereq: Brawl••,Weaponry•
+      police_tactics:      {type: integer, minimum: 0, maximum: 3}
+      # unarmed_defense: •Like a Book; ••Studied Style; •••Redirect;
+      #   ••••Joint Strike; •••••Like the Breeze.
+      #   Prereq: Dex•••,Brawl••,Defensive Combat:Brawl
+      unarmed_defense:     {type: integer, minimum: 0, maximum: 5}
+      # close_quarters_combat: •Firing Lines; ••Hard Surfaces; •••Armored Coffin;
+      #   ••••Prep Work; •••••Turnabout. Prereq: Wits•••,Athletics••,Brawl•••
+      close_quarters_combat: {type: integer, minimum: 0, maximum: 5}
+      # improvised_weaponry: •Always Armed; ••In Harm's Way; •••Breaking Point.
+      #   Prereq: Wits•••,Weaponry•
+      improvised_weaponry: {type: integer, minimum: 0, maximum: 3}
 
   # Splat-specific sections (only the section matching splat is used)
   vampire:

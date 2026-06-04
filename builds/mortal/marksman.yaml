@@ -1,0 +1,41 @@
+id: 108
+name: "Military Marksman"
+splat: mortal
+size: 5
+
+# Precision long-range shooter (Marksmanship ••).
+# Uses a bolt-action rifle for maximum damage at the cost of low initiative.
+# Patience and discipline reflected in Resolve•••, Composure•••.
+# Prereqs met: Composure•••, Resolve•••, Firearms••.
+attributes:
+  strength: 2
+  dexterity: 3
+  stamina: 2
+  intelligence: 3
+  wits: 3
+  resolve: 4
+  presence: 2
+  manipulation: 2
+  composure: 4
+
+skills:
+  brawl: 1
+  weaponry: 0
+  firearms: 5
+  athletics: 2
+  stealth: 3
+
+weapon:
+  name: "Rifle (Remington M-700, .30-06)"
+  damage_mod: 4
+  damage_type: lethal
+  initiative_penalty: -5
+  is_ranged: true
+
+armor:
+  general: 0
+  ballistic: 0
+
+merits:
+  marksmanship: 2
+  fast_reflexes: 1

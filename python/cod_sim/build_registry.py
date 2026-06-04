@@ -112,6 +112,7 @@ class BuildDefinition:
         # Combat merits (all optional)
         merits_raw = raw.get("merits", {})
         self.merits: dict[str, int] = {k: int(v) for k, v in merits_raw.items()}
+        # Passive stat merits
         self.iron_skin: int = self.merits.get("iron_skin", 0)
         self.iron_stamina: int = self.merits.get("iron_stamina", 0)
         self.fast_reflexes: int = self.merits.get("fast_reflexes", 0)
@@ -120,6 +121,19 @@ class BuildDefinition:
         self.martial_arts_lethal: int = self.merits.get("martial_arts_lethal", 0)
         self.street_fighting: int = self.merits.get("street_fighting", 0)
         self.brawling_dodge: int = self.merits.get("brawling_dodge", 0)
+        self.quick_draw: int = self.merits.get("quick_draw", 0)
+        # Full fighting-style merits
+        self.martial_arts: int = self.merits.get("martial_arts", 0)
+        self.armed_defense: int = self.merits.get("armed_defense", 0)
+        self.firefight: int = self.merits.get("firefight", 0)
+        self.marksmanship: int = self.merits.get("marksmanship", 0)
+        self.light_weapons: int = self.merits.get("light_weapons", 0)
+        self.heavy_weapons: int = self.merits.get("heavy_weapons", 0)
+        self.grappling: int = self.merits.get("grappling", 0)
+        self.police_tactics: int = self.merits.get("police_tactics", 0)
+        self.unarmed_defense: int = self.merits.get("unarmed_defense", 0)
+        self.close_quarters_combat: int = self.merits.get("close_quarters_combat", 0)
+        self.improvised_weaponry: int = self.merits.get("improvised_weaponry", 0)
 
     # ------------------------------------------------------------------
     # Derived stats (mirrors Rust BuildDefinition methods)

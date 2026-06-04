@@ -281,11 +281,13 @@ class TestMiniTournament:
         from cod_sim.policy import CoDPolicy
         from cod_sim.cod_sim import ACTION_SPACE_SIZE
 
-        # Use trained policy if available, otherwise random
+        # Use trained policy if available and compatible; otherwise fresh random policy
         ckpt = ckpt_mod.latest_checkpoint("checkpoints")
+        policy = None
         if ckpt:
-            policy, _, _ = ckpt_mod.load(ckpt)
-        else:
+            loaded, _, _ = ckpt_mod.load(ckpt)
+            policy = loaded if loaded.action_size == ACTION_SPACE_SIZE else None
+        if policy is None:
             policy = CoDPolicy(OBS_SIZE, ACTION_SPACE_SIZE)
         policy.eval()
 

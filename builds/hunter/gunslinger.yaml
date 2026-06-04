@@ -22,9 +22,10 @@ skills:
   stealth: 3
 
 weapon:
+  name: "Heavy Pistol (.45 ACP Colt M1911A1)"
   damage_mod: 2
   damage_type: lethal
-  initiative_penalty: 0
+  initiative_penalty: -2
   is_ranged: true
   is_silver: false
 

@@ -1,0 +1,42 @@
+id: 109
+name: "Firefight Specialist"
+splat: mortal
+size: 5
+
+# Close-range combat shooter (Firefight ••).
+# Shoot First (•) adds Firearms to Initiative while gun is drawn — acts early.
+# Carries a light pistol for fast handling; moves and shoots, stays mobile.
+# Prereqs met: Composure•••, Dex•••, Athletics••, Firearms••.
+attributes:
+  strength: 2
+  dexterity: 4
+  stamina: 2
+  intelligence: 3
+  wits: 4
+  resolve: 3
+  presence: 2
+  manipulation: 2
+  composure: 4
+
+skills:
+  brawl: 1
+  weaponry: 0
+  firearms: 5
+  athletics: 3
+  stealth: 2
+
+weapon:
+  name: "Light Pistol (Glock 17, 9mm)"
+  damage_mod: 1
+  damage_type: lethal
+  initiative_penalty: 0
+  is_ranged: true
+
+armor:
+  general: 0
+  ballistic: 2
+
+merits:
+  firefight: 2
+  fast_reflexes: 2
+  quick_draw: 1

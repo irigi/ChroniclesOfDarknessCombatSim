@@ -332,6 +332,11 @@ class TestShortTraining:
             pytest.skip("no checkpoint found — run scripts/train.py first")
 
         policy, _, step = ckpt_mod.load(ckpt_path)
+        if policy.action_size != ACTION_SPACE_SIZE:
+            pytest.skip(
+                f"checkpoint action_size={policy.action_size} != current {ACTION_SPACE_SIZE}; "
+                "retrain with scripts/train.py to get a compatible checkpoint"
+            )
         policy.eval()
         reg = _reg()
         ids = reg.all_ids()

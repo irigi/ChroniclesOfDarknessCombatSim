@@ -43,12 +43,20 @@ async def lifespan(app: FastAPI):
 
     # Trained policy (optional)
     from .. import checkpoint as _ck
+    from ..cod_sim import ACTION_SPACE_SIZE as _ASZ
     ckpt_path = _ck.latest_checkpoint(_CKPT_DIR)
     if ckpt_path:
         policy, _, step = _ck.load(ckpt_path)
-        policy.eval()
-        app.state.policy = policy
-        print(f"[startup] policy loaded from {ckpt_path} (step {step:,})")
+        if policy.action_size != _ASZ:
+            app.state.policy = None
+            print(
+                f"[startup] checkpoint {ckpt_path.name} has action_size={policy.action_size}, "
+                f"current={_ASZ} — skipping (retrain with scripts/train.py)"
+            )
+        else:
+            policy.eval()
+            app.state.policy = policy
+            print(f"[startup] policy loaded from {ckpt_path} (step {step:,})")
     else:
         app.state.policy = None
         print("[startup] no policy checkpoint found — using first-legal-action baseline")

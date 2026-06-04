@@ -23,6 +23,7 @@ skills:
   stealth: 1
 
 weapon:
+  name: "Unarmed (Fists / Natural Attacks)"
   damage_mod: 0
   damage_type: bashing
   initiative_penalty: 0

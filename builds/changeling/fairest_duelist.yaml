@@ -22,9 +22,10 @@ skills:
   stealth: 1
 
 weapon:
+  name: "Rapier (dueling sword; armor piercing 1)"
   damage_mod: 1
   damage_type: lethal
-  initiative_penalty: 0
+  initiative_penalty: -2
   is_ranged: false
 
 armor:

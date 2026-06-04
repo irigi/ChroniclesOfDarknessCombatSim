@@ -22,6 +22,7 @@ skills:
   stealth: 2
 
 weapon:
+  name: "Unarmed (Natural Attacks / Beast Claws)"
   damage_mod: 0
   damage_type: bashing
   initiative_penalty: 0

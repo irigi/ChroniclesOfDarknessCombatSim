@@ -1,0 +1,42 @@
+id: 106
+name: "Martial Artist"
+splat: mortal
+size: 5
+
+# Formal martial arts practitioner (Martial Arts ••••).
+# Focused Attack ignores 1 armor; The Hand As Weapon makes unarmed strikes lethal.
+# Iron Skin provides bashing armor and active lethal downgrade.
+# Prereqs met: Resolve•••, Dex•••, Athletics••, Brawl••, Stamina••• (Iron Skin).
+attributes:
+  strength: 3
+  dexterity: 4
+  stamina: 3
+  intelligence: 2
+  wits: 3
+  resolve: 4
+  presence: 2
+  manipulation: 2
+  composure: 3
+
+skills:
+  brawl: 4
+  weaponry: 0
+  firearms: 0
+  athletics: 4
+  stealth: 1
+
+weapon:
+  name: "Unarmed (Fists / Trained Strikes)"
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+merits:
+  martial_arts: 4
+  iron_skin: 2
+  fast_reflexes: 1

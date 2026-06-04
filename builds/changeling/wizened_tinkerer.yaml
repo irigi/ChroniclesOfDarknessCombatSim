@@ -22,9 +22,10 @@ skills:
   stealth: 2
 
 weapon:
+  name: "Machete / Custom Tool (Machete stats)"
   damage_mod: 2
   damage_type: lethal
-  initiative_penalty: -1
+  initiative_penalty: -2
   is_ranged: false
 
 armor:

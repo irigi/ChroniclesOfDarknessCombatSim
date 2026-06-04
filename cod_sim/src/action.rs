@@ -8,6 +8,11 @@ pub enum Action {
         target_idx: u8,
         spend_willpower: bool,
     },
+    /// All-Out Attack: sacrifice Defense for +2 attack dice (core CoD rule)
+    AllOutAttack {
+        target_idx: u8,
+        spend_willpower: bool,
+    },
     /// Activate a supernatural power (Discipline / Gift / Contract / Seeming)
     ActivatePower {
         /// Power slot index (splat-specific assignment):
@@ -40,20 +45,22 @@ pub const MAX_POWER_SLOTS: usize = 8;
 /// Encodes the action space as a fixed-size discrete integer.
 ///
 /// Layout:
-///   [0..MAX_TARGETS*2)                  Attack × target × willpower
-///   [A..A + MAX_POWER_SLOTS*MAX_TARGETS) ActivatePower × slot × target
-///   [B..B+3)                            SpendResourcePhysical × attribute
-///   [B+3]                               HealWithVitae
-///   [B+4]                               RegenerateEssence
-///   [B+5]                               FullDefense
-///   [B+6]                               Pass
-///   [B+7]                               IronSkinDowngrade  (new)
+///   [0..MAX_TARGETS*2)                     Attack × target × willpower
+///   [MAX_TARGETS*2..MAX_TARGETS*4)          AllOutAttack × target × willpower
+///   [A..A + MAX_POWER_SLOTS*MAX_TARGETS)    ActivatePower × slot × target
+///   [B..B+3)                               SpendResourcePhysical × attribute
+///   [B+3]                                  HealWithVitae
+///   [B+4]                                  RegenerateEssence
+///   [B+5]                                  FullDefense
+///   [B+6]                                  Pass
+///   [B+7]                                  IronSkinDowngrade
 ///
-/// Total = MAX_TARGETS*2 + MAX_POWER_SLOTS*MAX_TARGETS + 8
+/// Total = MAX_TARGETS*4 + MAX_POWER_SLOTS*MAX_TARGETS + 8
 pub const ACTION_SPACE_SIZE: usize =
-    MAX_TARGETS * 2 + MAX_POWER_SLOTS * MAX_TARGETS + 8;
+    MAX_TARGETS * 4 + MAX_POWER_SLOTS * MAX_TARGETS + 8;
 
-const POWER_OFFSET: usize = MAX_TARGETS * 2;
+pub const ALL_OUT_ATTACK_OFFSET: usize = MAX_TARGETS * 2;
+const POWER_OFFSET: usize = MAX_TARGETS * 4;
 const RESOURCE_PHYSICAL_OFFSET: usize = POWER_OFFSET + MAX_POWER_SLOTS * MAX_TARGETS;
 const HEAL_OFFSET: usize = RESOURCE_PHYSICAL_OFFSET + 3;
 const REGEN_ESSENCE_OFFSET: usize = HEAL_OFFSET + 1;
@@ -67,6 +74,11 @@ pub fn encode_action(action: Action) -> usize {
             let t = target_idx as usize;
             let w = spend_willpower as usize;
             t * 2 + w
+        }
+        Action::AllOutAttack { target_idx, spend_willpower } => {
+            let t = target_idx as usize;
+            let w = spend_willpower as usize;
+            ALL_OUT_ATTACK_OFFSET + t * 2 + w
         }
         Action::ActivatePower { power_slot, target_idx } => {
             POWER_OFFSET + power_slot as usize * MAX_TARGETS + target_idx as usize
@@ -83,10 +95,15 @@ pub fn encode_action(action: Action) -> usize {
 }
 
 pub fn decode_action(idx: usize) -> Option<Action> {
-    if idx < POWER_OFFSET {
+    if idx < ALL_OUT_ATTACK_OFFSET {
         let target_idx = (idx / 2) as u8;
         let spend_willpower = idx % 2 == 1;
         Some(Action::Attack { target_idx, spend_willpower })
+    } else if idx < POWER_OFFSET {
+        let rel = idx - ALL_OUT_ATTACK_OFFSET;
+        let target_idx = (rel / 2) as u8;
+        let spend_willpower = rel % 2 == 1;
+        Some(Action::AllOutAttack { target_idx, spend_willpower })
     } else if idx < RESOURCE_PHYSICAL_OFFSET {
         let rel = idx - POWER_OFFSET;
         let power_slot = (rel / MAX_TARGETS) as u8;
@@ -119,6 +136,8 @@ mod tests {
         let actions = [
             Action::Attack { target_idx: 0, spend_willpower: false },
             Action::Attack { target_idx: 3, spend_willpower: true },
+            Action::AllOutAttack { target_idx: 1, spend_willpower: false },
+            Action::AllOutAttack { target_idx: 2, spend_willpower: true },
             Action::ActivatePower { power_slot: 2, target_idx: 1 },
             Action::SpendResourcePhysical { attribute: 0 },
             Action::HealWithVitae,
@@ -145,5 +164,31 @@ mod tests {
         let idx = encode_action(Action::IronSkinDowngrade);
         assert_eq!(idx, IRON_SKIN_OFFSET);
         assert_eq!(decode_action(idx), Some(Action::IronSkinDowngrade));
+    }
+
+    #[test]
+    fn encode_decode_all_out_attack() {
+        let a = Action::AllOutAttack { target_idx: 0, spend_willpower: false };
+        let idx = encode_action(a);
+        assert_eq!(idx, ALL_OUT_ATTACK_OFFSET);
+        assert_eq!(decode_action(idx), Some(a));
+
+        let b = Action::AllOutAttack { target_idx: 3, spend_willpower: true };
+        let idx2 = encode_action(b);
+        assert!(idx2 < ACTION_SPACE_SIZE);
+        assert_eq!(decode_action(idx2), Some(b));
+    }
+
+    #[test]
+    fn all_out_attack_does_not_overlap_attack() {
+        for t in 0..MAX_TARGETS {
+            for wp in [false, true] {
+                let att = encode_action(Action::Attack { target_idx: t as u8, spend_willpower: wp });
+                let aoa = encode_action(Action::AllOutAttack { target_idx: t as u8, spend_willpower: wp });
+                assert_ne!(att, aoa);
+                assert!(att < ALL_OUT_ATTACK_OFFSET);
+                assert!(aoa >= ALL_OUT_ATTACK_OFFSET && aoa < POWER_OFFSET);
+            }
+        }
     }
 }

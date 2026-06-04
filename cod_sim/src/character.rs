@@ -505,7 +505,13 @@ impl CharacterState {
         let fast_reflexes = build.merit("fast_reflexes") as i16;
         let fairest_init_bonus = seeming_composure_bonus as i16; // Fairest +1 Composure → +1 init mod
         let beast_bonus: i16 = if let SplatBuild::Changeling { seeming: Seeming::Beast, .. } = &build.splat_data { 3 } else { 0 };
-        let final_initiative = initiative + fast_reflexes + fairest_init_bonus + beast_bonus;
+        // Firefight: Shoot First (•) — +Firearms to Initiative when ranged weapon drawn
+        let firefight_bonus: i16 = if build.merit("firefight") >= 1 && build.weapon.is_ranged {
+            build.skills.firearms as i16
+        } else {
+            0
+        };
+        let final_initiative = initiative + fast_reflexes + fairest_init_bonus + beast_bonus + firefight_bonus;
 
         // ── Willpower ─────────────────────────────────────────────────────────
         let max_wp = build.max_willpower() + seeming_composure_bonus;

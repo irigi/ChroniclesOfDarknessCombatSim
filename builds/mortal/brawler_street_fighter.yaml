@@ -1,0 +1,42 @@
+id: 107
+name: "Street Fighter"
+splat: mortal
+size: 5
+
+# Veteran of street combat (Street Fighting •••••).
+# Uses max(Dex, Wits) for Defense attribute (Duck and Weave base).
+# Iron Stamina reduces wound penalties; high Stamina/Composure for Style prereqs.
+# Prereqs met: Stamina•••, Composure•••, Brawl••, Streetwise•• (narrative).
+attributes:
+  strength: 4
+  dexterity: 3
+  stamina: 4
+  intelligence: 2
+  wits: 3
+  resolve: 2
+  presence: 2
+  manipulation: 2
+  composure: 4
+
+skills:
+  brawl: 5
+  weaponry: 1
+  firearms: 0
+  athletics: 3
+  stealth: 2
+
+weapon:
+  name: "Unarmed (Fists / Dirty Fighting)"
+  damage_mod: 0
+  damage_type: bashing
+  initiative_penalty: 0
+  is_ranged: false
+
+armor:
+  general: 0
+  ballistic: 0
+
+merits:
+  street_fighting: 5
+  iron_stamina: 3
+  iron_skin: 2
