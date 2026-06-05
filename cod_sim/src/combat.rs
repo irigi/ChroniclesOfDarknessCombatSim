@@ -677,28 +677,42 @@ impl CombatState {
     }
 
     fn update_incapacitation(&mut self, idx: usize) {
-        let ch = &mut self.characters[idx];
-        let splat_clone = ch.splat.clone();
+        // Read health state before any mutable borrow (needed for Stamina roll path)
+        let splat_clone = self.characters[idx].splat.clone();
+        let last_agg    = self.characters[idx].health.last_box_is(DamageType::Aggravated);
+        let last_lethal = self.characters[idx].health.last_box_is(DamageType::Lethal);
+        let last_bash   = self.characters[idx].health.last_box_is(DamageType::Bashing)
+                          && !last_lethal;   // exactly bashing in last box
+
         match &splat_clone {
             SplatState::Vampire { .. } => {
-                if ch.health.last_box_is(DamageType::Aggravated) {
-                    ch.is_incapacitated = true;
-                    ch.in_torpor = false;
-                } else if ch.health.last_box_is(DamageType::Lethal) {
-                    ch.in_torpor = true;
-                    ch.is_incapacitated = true;
+                // VtR 2e: bashing-full → stays conscious; lethal-full → torpor; agg-full → final death.
+                if last_agg {
+                    self.characters[idx].is_incapacitated = true;
+                    self.characters[idx].in_torpor = false;
+                } else if last_lethal {
+                    self.characters[idx].in_torpor = true;
+                    self.characters[idx].is_incapacitated = true;
                 }
             }
-            SplatState::Werewolf { current_form, .. } => {
-                if ch.health.last_box_is(DamageType::Aggravated)
-                    || ch.health.last_box_is(DamageType::Lethal) {
-                    ch.is_incapacitated = true;
+            SplatState::Werewolf { .. } => {
+                // Werewolves regenerate bashing; lethal/agg in last box = incapacitated.
+                if last_lethal {
+                    self.characters[idx].is_incapacitated = true;
                 }
-                let _ = current_form;
             }
             _ => {
-                if ch.health.empty_boxes() == 0 {
-                    ch.is_incapacitated = true;
+                // Mortal/Changeling: CoD p.95 — full lethal/agg → incapacitated.
+                // Full bashing → reflexive Stamina roll each turn to stay conscious
+                // (wound penalty does NOT apply to this roll per the same rule).
+                if last_lethal {
+                    self.characters[idx].is_incapacitated = true;
+                } else if last_bash {
+                    let stamina = self.builds[idx].attributes.stamina;
+                    let result = roll_pool(stamina as i8, AgainRule::TenAgain, &mut self.rng);
+                    if result.successes < 1 {
+                        self.characters[idx].is_incapacitated = true;
+                    }
                 }
             }
         }
@@ -1013,6 +1027,26 @@ impl CombatState {
                         self.regen_tick_counters[i] = 0;
                         self.characters[i].health.heal_one(DamageType::Lethal);
                     }
+                }
+            }
+        }
+
+        // Mortal/Changeling bashing-full consciousness check (CoD p.95 / VtR p.181).
+        // Characters who survived last round with a bashing-only full track must re-roll
+        // Stamina each new turn. Wound penalty is explicitly excluded from this roll.
+        for i in 0..self.characters.len() {
+            if self.characters[i].is_incapacitated { continue; }
+            let is_mortal_or_changeling = matches!(
+                self.characters[i].splat, SplatState::Mortal | SplatState::Changeling { .. }
+            );
+            if !is_mortal_or_changeling { continue; }
+            let last_lethal = self.characters[i].health.last_box_is(DamageType::Lethal);
+            let last_bash   = self.characters[i].health.last_box_is(DamageType::Bashing) && !last_lethal;
+            if last_bash {
+                let stamina = self.builds[i].attributes.stamina;
+                let result = roll_pool(stamina as i8, AgainRule::TenAgain, &mut self.rng);
+                if result.successes < 1 {
+                    self.characters[i].is_incapacitated = true;
                 }
             }
         }
@@ -1802,5 +1836,68 @@ mod tests {
         state.advance_actor();
         assert_eq!(state.current_actor_pos, pos_before,
             "actor should not advance when extra action is pending");
+    }
+
+    #[test]
+    fn vampire_bashing_full_stays_conscious() {
+        // VtR 2e: "If a vampire's health track is filled with bashing damage, she remains conscious."
+        let vamp = make_vampire(290, 3, 2, 3, 2, 1, 0, 0, 0);
+        let mortal = make_mortal(291, 3, 2, 3, 2);
+        let mut state = CombatState::new(vec![vamp, mortal], vec![0, 1], 42);
+        // Fill vampire track with bashing directly
+        let hp = state.characters[0].health.size;
+        state.characters[0].health.apply(hp as u8, DamageType::Bashing);
+        assert_eq!(state.characters[0].health.empty_boxes(), 0);
+        // Trigger incapacitation check (simulate via update)
+        state.update_incapacitation(0);
+        assert!(!state.characters[0].is_incapacitated,
+            "vampire with full bashing track must remain conscious");
+        assert!(!state.characters[0].in_torpor,
+            "vampire with full bashing track must not be in torpor");
+    }
+
+    #[test]
+    fn vampire_lethal_full_goes_torpor() {
+        // VtR 2e: "If it fills with lethal damage, she falls into torpor."
+        let vamp = make_vampire(292, 3, 2, 3, 2, 1, 0, 0, 0);
+        let mortal = make_mortal(293, 3, 2, 3, 2);
+        let mut state = CombatState::new(vec![vamp, mortal], vec![0, 1], 42);
+        let hp = state.characters[0].health.size;
+        state.characters[0].health.apply(hp as u8, DamageType::Lethal);
+        state.update_incapacitation(0);
+        assert!(state.characters[0].in_torpor, "vampire with full lethal track must enter torpor");
+        assert!(state.characters[0].is_incapacitated);
+    }
+
+    #[test]
+    fn mortal_lethal_full_immediately_incapacitated() {
+        // CoD p.95: lethal in last box → bleeding out → incapacitated.
+        let mortal = make_mortal(294, 3, 2, 3, 2);
+        let vamp = make_vampire(295, 3, 2, 3, 2, 1, 0, 0, 0);
+        let mut state = CombatState::new(vec![mortal, vamp], vec![0, 1], 42);
+        let hp = state.characters[0].health.size;
+        state.characters[0].health.apply(hp as u8, DamageType::Lethal);
+        state.update_incapacitation(0);
+        assert!(state.characters[0].is_incapacitated,
+            "mortal with full lethal track must be incapacitated");
+    }
+
+    #[test]
+    fn mortal_bashing_full_may_stay_conscious() {
+        // CoD p.95: full bashing → Stamina roll to stay conscious, not auto-incapacitate.
+        // Use Stamina=5 so the mortal almost always passes. We test across seeds to confirm
+        // that at least some seeds produce a conscious mortal (i.e. not guaranteed incap).
+        let mortal_build = make_mortal(296, 2, 2, 5, 2); // Stamina 5
+        let vamp = make_vampire(297, 3, 2, 3, 2, 1, 0, 0, 0);
+        let mut conscious_count = 0u32;
+        for seed in 0..20u64 {
+            let mut state = CombatState::new(vec![mortal_build.clone(), vamp.clone()], vec![0, 1], seed);
+            let hp = state.characters[0].health.size;
+            state.characters[0].health.apply(hp as u8, DamageType::Bashing);
+            state.update_incapacitation(0);
+            if !state.characters[0].is_incapacitated { conscious_count += 1; }
+        }
+        assert!(conscious_count > 0,
+            "Stamina-5 mortal must stay conscious with bashing-full on at least some seeds (got {} / 20)", conscious_count);
     }
 }

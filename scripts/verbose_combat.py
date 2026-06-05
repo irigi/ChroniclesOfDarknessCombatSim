@@ -77,7 +77,7 @@ def wound_penalty(bashing, lethal, aggravated, max_hp, iron_stamina=0):
         raw = -1
     else:
         raw = 0
-    return max(raw + iron_stamina, -3 if iron_stamina == 0 else raw + iron_stamina)
+    return min(raw + iron_stamina, 0)  # cap at 0: wound penalty is never positive
 
 
 def defense_base(bd):
@@ -443,7 +443,13 @@ def main(seed: int = 42, use_policy: bool = False):
                 hp_rem = new["max_health"] - new_dmg
                 incap_tag = " [INCAPACITATED]" if new["is_incapacitated"] else ""
                 torpor_tag = " [TORPOR]" if new.get("in_torpor") else ""
-                deltas.append(f"  → {name}: {','.join(parts)}  [{hp_rem}/{new['max_health']} hp]{incap_tag}{torpor_tag}")
+                # Mortal/changeling: bashing-full but conscious = Stamina roll each turn
+                sta_tag = ""
+                if (not new["is_incapacitated"] and
+                        builds_by_idx[i].splat in ("mortal", "changeling") and
+                        new_dmg == new["max_health"] and new["bashing"] > 0):
+                    sta_tag = " [BASHING-FULL: Sta roll to stay conscious]"
+                deltas.append(f"  → {name}: {','.join(parts)}  [{hp_rem}/{new['max_health']} hp]{incap_tag}{torpor_tag}{sta_tag}")
 
             # Resource delta
             r_old, r_new = old["resource"], new["resource"]
