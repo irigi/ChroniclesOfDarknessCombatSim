@@ -12,6 +12,12 @@ Chronicles of Darkness 2e combat simulator. Simulates M-vs-N fights across 4 sup
 # One-time setup
 bash scripts/bootstrap.sh
 
+# Build what's missing/stale, then start web UI (or: run.sh test)
+bash scripts/run.sh
+
+# Remove regenerable artifacts (target/, __pycache__, built .so; --venv also drops .venv)
+bash scripts/clean.sh
+
 # Build Rust extension (development, run after any Rust change)
 source ~/.cargo/env && .venv/bin/maturin develop --release
 
