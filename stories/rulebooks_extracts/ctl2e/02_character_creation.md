@@ -22,12 +22,15 @@ Source: Ch3 pp. 89–100 (L7352–8348). Seeming/kith/court details → `08_fact
      Mantle 3 (or Goodwill 5)** [p. 150] — a starting courtier has only Mantle •, so either buy Mantle up to ••• with Merit
      dots or take both Royals from favored Regalia. Court Contracts have **no seeming benefits**.
    - **Wyrd 1 free**; +1 Wyrd for 5 Merit dots, +2 for 10 (max Wyrd 3 at creation).
-   - **Frailties**: only if Wyrd ≥ 6 (see 05 §1 table) — normally none at start.
+   - **Frailties**: by Wyrd (05 §1): none at Wyrd 1; **1 minor at Wyrd 2–3** — so buying Wyrd with Merit dots adds a frailty.
+     Buying Wyrd 3 is also a 3-die breaking point (reaching Wyrd 3).
 6. **Merits: 10 dots** (minus dots spent on Wyrd). Any core-book Merit **except Supernatural Merits, Vice-Ridden,
    Virtuous**; plus CtL Merits (04).
 7. **Advantages**: Size 5; Health = Size + Stamina; Speed = 5 + Str + Dex; **Willpower = Resolve + Composure**;
    **Max Clarity = Wits + Composure**; Initiative = Dex + Composure; Defense = min(Wits, Dex) + Athletics.
-   Glamour: RAW gives no starting figure; house default **half max** (Wyrd 1: 5) — see 99 §B [interp].
+   Glamour: the book's text gives no figure. The official 2e character sheet reportedly prints "Starting Wyrd = 1 • Starting
+   Glamour = 10" (external report, not in the .txt; unverified). Default: **a new character starts at full Glamour**; a scene
+   starting mid-story uses recent history, or half max if unknown (99 §B).
 
 ## 2. Free / automatic traits checklist (list on every sheet)
 | Trait | Source |

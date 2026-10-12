@@ -74,14 +74,15 @@ Each works like the seasonal Mantle (04 §B): cumulative dots; most low dots = +
   Initiative once/chapter, ••••+1 WP on DF once/scene, •••••take +1 wound penalty to give an ally +Mantle Initiative).
   *Winter* (Glamour: definitively win a significant fight; •Hedge navigation, ••extreme environments & −1 hardship
   penalties, •••+1L on one-on-one fights she started, ••••+1 Composure vs emotion changes, •••••never Beaten Down).
-- **Ipswich Tide Courts** [pp. 287–288; columns interleaved]: *High Tide* (Glamour: open someone's last Door; ••••auto-
-  break mundane barriers, •••••enemies of lower Wyrd −2 to attack her); *Ebb Tide* (Glamour: talk someone down from a
-  fight; •shared-past persuasion, ••defuse groups, •••reroll a negotiation once/chapter, ••••+1 Composure vs losing cool,
-  •••••enemies −Mantle to Initiative); *Low Tide* (Glamour: foil plans with secrets; •dig dirt, ••blackmail, •••+1 WP
-  profiting as go-between, ••••+1 clue element, •••••Leveraged targets must meet two demands); *Flood Tide* (Glamour: a
-  built plan goes off without a hitch; •find shelter, ••make friends somewhere new, •••1 WP: +Mantle Etiquette, ••••reroll
-  a Finesse roll once/chapter, •••••WP instead of Glamour for portaling once/chapter). Some dots (Tilt infliction,
-  undermine authority, reroll Power roll) can't be assigned with certainty — see p. 287–288.
+- **Ipswich Tide Courts** [pp. 287–288; columns interleaved, reconstructed by content]: *High Tide* (Glamour: open someone's
+  last Door; •+Mantle to mundane rolls inflicting Tilts, ••undermine someone's authority/respect, •••reroll a Power-Attribute
+  roll once/chapter, ••••auto-break mundane barriers, •••••enemies of lower Wyrd −2 to attack her); *Ebb Tide* (Glamour:
+  talk someone down from a fight; •shared-past persuasion, ••defuse groups, •••reroll a deal/pledge negotiation once/chapter,
+  ••••+1 Composure vs losing her cool, •••••enemies −Mantle to Initiative); *Low Tide* (Glamour: foil plans with secrets;
+  •investigate dirty secrets, ••blackmail with self-found info, •••+1 WP profiting as go-between, ••••+1 clue element,
+  •••••Leveraged targets must meet two demands); *Flood Tide* (Glamour: a built plan goes off without a hitch; •find
+  shelter, ••make friends somewhere new, •••1 WP: +Mantle Etiquette for a scene once/chapter, ••••reroll a Finesse roll
+  once/chapter, •••••WP instead of Glamour for portaling once/chapter). Setting-specific courts.
 - **New Orleans Traders' Courts** [pp. 291–292]: *Coins* (Glamour: collect what she's owed; •persuade to oath, ••detect
   cheating, •••1 WP: +Mantle Resources, ••••−Mantle Goblin Debt once/story, •••••1 WP: learn anyone's current heart's
   desire). *Barter* (Glamour: intercede in an unfair deal; •read situations, ••deals in Tumbledown, •••+1 WP resolving

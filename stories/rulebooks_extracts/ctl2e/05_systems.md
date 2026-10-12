@@ -15,17 +15,18 @@ its Tolerance (resisting) or Potency (forcing); a changeling uses Wyrd wherever 
 | Wyrd | Attr/Skill max | Max Glamour / per turn | Frailties | Disease/fatigue penalty reduction | Goblin fruits carried out of Hedge |
 |---|---|---|---|---|---|
 | 1 | 5 | 10 / 1 | — | by 1 | 3 |
-| 2 | 5 | 11 / 2 | — | by 1 | 7 |
-| 3 | 5 | 12 / 3 | — | by 1 | 7 |
-| 4 | 5 | 13 / 4 | — | by 2 | 13 |
-| 5 | 5 | 15 / 5 | — | by 2 | 13 |
-| 6 | 6 | 20 / 6 | 1 minor | by 2 | 13 |
-| 7 | 7 | 25 / 7 | 2 minor | by 3 | 29 |
-| 8 | 8 | 30 / 8 | 1 major, 2 minor | by 3 | 29 |
+| 2 | 5 | 11 / 2 | 1 minor | by 1 | 7 |
+| 3 | 5 | 12 / 3 | 1 minor | by 1 | 7 |
+| 4 | 5 | 13 / 4 | 2 minor | by 2 | 13 |
+| 5 | 5 | 15 / 5 | 2 minor | by 2 | 13 |
+| 6 | 6 | 20 / 6 | 1 major, 2 minor | by 2 | 13 |
+| 7 | 7 | 25 / 7 | 1 major, 2 minor | by 3 | 29 |
+| 8 | 8 | 30 / 8 | 1 major, 3 minor | by 3 | 29 |
 | 9 | 9 | 50 / 10 | 1 major, 3 minor | by 3 | 101 |
 | 10 | 10 | 75 / 15 | 2 major, 3 minor | by 4 | unlimited |
-Table text is column-scrambled in the .txt (L8450–8570); frailty column has only 5 entries → assigned to Wyrd 6–10
-**[interp, consistent with "frailties (if any)" at creation]**. Disease reduction also = bonus to resist mundane
+Table text is column-scrambled in the .txt (L8450–8570); the frailty column's 5 entries are read as starting at Wyrd 2 and
+changing every 2 dots (2, 4, 6, 8, 10), mirroring the Hedge-ghost table (p. 246). This is corroborated by Carey Ives
+(changeling, Wyrd 3, one minor taboo, p. 242). **So buying Wyrd 2–3 at creation means taking a minor frailty.** Disease reduction also = bonus to resist mundane
 disease outside action scenes (Sick Tilt).
 
 ## 2. Frailties & cold iron [pp. 101–102]
@@ -82,21 +83,25 @@ complete stranger −2; rejection of or triumph over a True Fae −3.
 - **1**: told experiences are unreal by a convincing stranger; changing someone via Dream Infiltrator; spending all
   Glamour in one day; one day without human/changeling contact; breaking a mundane promise; meeting your fetch first time.
 - **2**: told unreal by an authority figure; Dream Intruder change; mortal shuns/disparages you; **losing a Touchstone**;
-  eating only goblin fruit for a day; a week without contact; someone breaks a mundane promise to you; discovering a
-  minor lie to you; reenacting/reliving a durance memory; kidnapping/keeping someone captive*; actively searching out
-  durance memories*; taking psychotropic drugs*.
+  eating only goblin fruit for a day; **a week without contact**; someone breaks a mundane promise to you; discovering a
+  minor lie to you; gaining a non-Clarity Condition that confuses/jars your senses (Lost, Spooked)*; someone else
+  tampering with your dreams*; actively searching out durance memories / taking psychotropic drugs (2 or 4)*.
 - **3**: told unreal by someone you trust; victim of a **non-fae supernatural power** that confuses senses/reenacts what
-  your Keeper did; torturing; **using Glamour to force someone to change behavior**; brainwashing via repeated dream
-  manipulation; two weeks without contact; spending time in Arcadia; killing someone else's fetch; prolonged/intimate
-  contact with a True Fae; **reaching Wyrd 3**; **reaping Glamour***.
+  your Keeper did; torturing*; **using Glamour to force someone to change behavior***; brainwashing via repeated dream
+  manipulation*; two weeks without contact; killing someone else's fetch; **reaching Wyrd 3**; someone breaks a formal
+  oath/pledge to you.
 - **4**: presented with "evidence" experiences are unreal; accidentally killing a human; **breaking formal oaths/
   pledges**; Dream Assailant change; discovering an important lie; death of a family member; killing another
-  changeling; killing your own fetch; a month without contact; **reaching Wyrd 6**; gaining a non-Clarity Condition
-  that confuses/jars the senses (Lost, Spooked)*; someone else tampering with your dreams*.
+  changeling; killing your own fetch; a month without contact; kidnapping/keeping someone captive*; reenacting/reliving a
+  durance memory*; **reaching Wyrd 6**.
 - **5**: "deprogramming"/extended torment to convince you it's unreal; premeditated killing of a human; a year+ without
-  contact; killing your Touchstone; someone breaks a formal oath/pledge to you; **reaching Wyrd 10**.
-- \* The sidebar's columns are interleaved in the .txt (L9017–9112); starred items' dice are **[interp]** (best
-  reconstruction from line order + escalation logic; e.g. contact: day 1 / week 2 / two weeks 3 / month 4 / year 5).
+  contact; spending time in Arcadia; prolonged/intimate contact with a True Fae; killing your Touchstone; **reaping
+  Glamour**; **reaching Wyrd 10**.
+- \* The sidebar's columns are interleaved in the .txt (L9017–9112). Reconstruction rule: consecutive bullets belong to one
+  column, while blank-separated single bullets alternate between two columns, anchored by escalation (contact: day 1 /
+  week 2 / two weeks 3 / month 4 / year 5; Wyrd 3/6/10 → 3/4/5). Starred items are the least certain. The block "torturing /
+  Glamour-forcing / brainwashing" sits under the Three Dice header, but an external review read Glamour-forcing as **5** —
+  if a scene hinges on it, the ST picks 3 or 5 and says so.
 - **Powers as breaking points**: Bedlam, Spring Contracts, oneiromancy that **force a desire on someone** in a way they
   wouldn't agree to = breaking point, severity by ST.
 
@@ -182,7 +187,7 @@ opponent** (lures them into the Thorns / toward Arcadia). New goal → new chase
   among present characters (min 0; 10 if no changelings). **Base pool 5** for all rolls (incl. the Edge), modified:
   on a trod −rating; per character with a positive mental/emotional Condition −1; each new turn +1 (cumulative);
   per character with a negative mental/emotional Condition +1 (both cancel per character); any character's current
-  Clarity (+1) below half max +2 [layout-garbled row]; pressing time limit +2; Hedge has the Edge +2; any changeling
+  Clarity below half its max **+1** (once, not per character; the .txt row reads "current Clarity +1"); pressing time limit +2; Hedge has the Edge +2; any changeling
   incited Bedlam this scene +2 (exceptional +3); in the Thorns +3.
 - Characters' navigation pool: RAW silent — [interp] **Wits + Survival** (Occult/Streetwise if fitting; teamwork allowed).
   Pursuers (Huntsmen, hobgoblins) run their own chase against the party under core chase rules, with Hedge modifiers to
