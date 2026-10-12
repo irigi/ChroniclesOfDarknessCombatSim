@@ -7,7 +7,7 @@ instead of the full books. Each book has `00_index.md` with a file guide and
 | Dir | Book | Status |
 |-----|------|--------|
 | `vtr2e/` | Vampire: the Requiem 2e | not yet extracted |
-| `cod_core/` | Chronicles of Darkness core (combat, skills, merits, Conditions, ephemeral beings) | not yet extracted |
+| `cod_core/` | Chronicles of Darkness core (combat, skills, merits, Conditions, ephemeral beings, Horrors, God-Machine) | ✅ extracted, self-tested |
 | `wtf2e/` | Werewolf: the Forsaken 2e | not yet extracted |
 | `ctl2e/` | Changeling: the Lost 2e | not yet extracted |
 | `gts2e/` | Geist: the Sin-Eaters 2e | not yet extracted |
