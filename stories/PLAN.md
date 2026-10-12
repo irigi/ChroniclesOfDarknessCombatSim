@@ -14,7 +14,7 @@ sessions never need the full book again. Full-book reads are expensive
 | 3 | Werewolf: the Forsaken 2e | `Werewolf_the_Forsaken_Second_Edition_(Download_Final).txt` | 1.47 MB / 38.5K lines | `wtf2e/` | ✅ done 2026-10-12 (~40K tokens) |
 | 4 | Changeling: the Lost 2e | `Changeling_the_Lost_2e_(Final_Download).txt` | 1.43 MB / 32.5K lines | `ctl2e/` | ✅ done 2026-10-12 (~44K tokens) |
 | 5 | Geist: the Sin-Eaters 2e | `Geist_the_Sin-Eaters_Second_Edition_(Final_Download)(1).txt` | 1.73 MB / 18.7K lines | `gts2e/` | todo |
-| 6 | Mage: the Awakening 2e | `Mage the Awakening - Second Edition.txt` | 1.42 MB / 32.5K lines | `mta2e/` | optional |
+| 6 | Mage: the Awakening 2e | `Mage the Awakening - Second Edition.txt` | 1.42 MB / 32.5K lines | `mta2e/` | ✅ done 2026-10-12 (~49K tokens) |
 
 Why core second: combat, skills, mortal merits, Conditions/Tilts and the
 generic ephemeral-entity (ghost/spirit) rules live in the core book. During the
@@ -129,3 +129,13 @@ Test cases:
   needing Mantle 3. These are now patched as [interp] in 99 §C. **Warning:** during this session several task-notifications
   claimed the subagent had completed, with invented content, while its transcript showed it still reading. Trust only the
   SubagentHandback/report, and verify roll calls in the subagent JSONL.
+
+- **Mage (2026-10-12)**: Same bare-number page markers. The TOC fills L1–1717, so start the page map after it. The book is ~44 bytes/line, and 600–900-line Read chunks were comfortable.
+  Fluff that I skimmed or grepped only: Ch1 Paths/Orders (I read only the "X Magic" Ruling/Inferior blocks), Ch2 Awakening narratives, Ch7 cities (grepped for mechanics: Ansho, Paradox
+  beacons, LA Astral) and App. 2 Atlantis. The fiction interludes are character-shredded. Ch5 reprints core, so I grepped it for "mage/Gnosis/Paradox/Hubris" deltas only.
+  The spell chapter is the bulk of the book (pp. 128–191, ~6.3K lines). It extracts well as one line per spell (Practice · Primary Factor · Withstand · cost · rote Skills · effect · Reach options).
+  About 20 spells had headers separated from their bodies, and I re-paired them by content. Cross-check the scrambled Gnosis and Paradox tables against App. 4 (the spellcasting quick reference).
+  **Trap:** the p. 328 sheet carries a 1e creation summary (7 Merits, Mana = Wisdom). I logged it in 99.
+  There's no example file for Mage, so I wrote a test scene: an Obrimos Arrow vs a Panopticon Seer in a garage with two Sleeper guards. It covered Counterspell, Mage Armor, an Aimed spell that hit a
+  bystander in its area, Paradox contain/release, Withstand, Dissonance, Hubris and Scrutiny. It found **no extract errors** and ~20 RAW-silent points (witness counts, Counterspell timing/Mana,
+  Active Sight penalty scope, Dissonance scope, experienced-start XP), which I ruled in 99 §C. The subagent's handback arrived properly this time.
