@@ -172,7 +172,7 @@ prerequisite removes everything stacked on it; durations of prerequisites freeze
 - **Essence Thief** (1): can steal Essence from other ephemeral types.
 - **Fate Sense** (1): vs Resolve + ST; learns Fate/Destiny.
 - **Firestarter** (1): one small fire per success within Power yards.
-- **Hallucination** (1): vs Wits + Composure + ST; each extra success alters one sense.
+- **Hallucination** (1): vs Wits + Composure + ST; each success **over the contesting roll** (net) alters one sense.
 - **Host Jump** (3): move Possessed/Claimed to touched host meeting prerequisites.
 - **Implant Mission** (2): vision + **Obsession** to carry out a task.
 - **Innocuous** (free, no roll): Perception to notice it −2.

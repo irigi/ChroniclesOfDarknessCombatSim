@@ -11,7 +11,7 @@ sessions never need the full book again. Full-book reads are expensive
 |---|------|------------------------|------|-------------|--------|
 | 1 | Vampire: the Requiem 2e | `Vampire the Requiem - SECOND EDITION.txt` | 1.30 MB / 29.6K lines | `vtr2e/` | ✅ done 2026-10-12 (~38K tokens) |
 | 2 | Chronicles of Darkness core | `Chronicles of Darkness.txt` | 1.63 MB / 16.5K lines | `cod_core/` | ✅ done 2026-10-12 (~33K tokens) |
-| 3 | Werewolf: the Forsaken 2e | `Werewolf_the_Forsaken_Second_Edition_(Download_Final).txt` | 1.47 MB / 38.5K lines | `wtf2e/` | todo |
+| 3 | Werewolf: the Forsaken 2e | `Werewolf_the_Forsaken_Second_Edition_(Download_Final).txt` | 1.47 MB / 38.5K lines | `wtf2e/` | ✅ done 2026-10-12 (~40K tokens) |
 | 4 | Changeling: the Lost 2e | `Changeling_the_Lost_2e_(Final_Download).txt` | 1.43 MB / 32.5K lines | `ctl2e/` | todo |
 | 5 | Geist: the Sin-Eaters 2e | `Geist_the_Sin-Eaters_Second_Edition_(Final_Download)(1).txt` | 1.73 MB / 18.7K lines | `gts2e/` | todo |
 | 6 | Mage: the Awakening 2e | `Mage the Awakening - Second Edition.txt` | 1.42 MB / 32.5K lines | `mta2e/` | optional |
@@ -108,3 +108,12 @@ Test cases:
   (Daeva + 3 police) passed all three known traps; only RAW-silent gaps (Idol edge cases, Charmed duration, reflexive
   timing, Humanity penalty scope) — patched as [interp].
 
+- **Werewolf (2026-10-12)**: Same page-marker layout; the TOC fills L1–1824 and also has bare numbers, so start the page map
+  after it. ~38 bytes/line → ~1500-line Read chunks (2000 overflowed once). Ch1 (auspices/tribes), Ch2 (setting), Ch6 (hunting
+  grounds) and the fiction pages are fluff. Fiction vignettes come out as character-shredded two-column garbage: skip them.
+  Grepped Ch6 and the named-idigam pages (pp. 222–245) for stat lines and read only those. The spirit rules (pp. 178–193) are the
+  heart of the book. The Numina [R] icon is lost (as in core), so a house list is in 06 §I. The PU table and some Merit pages are
+  scrambled; they were reconstructed by content. Self-test (Rank 2 spirit vs two mortals: Reach, Hallucination, Open, Fetter/
+  Urged, Possess, abjuration, Drain) found no extract errors. It found one misleading phrase (possession penalties shrink per
+  day Fettered) and ~35 RAW-silent points (starting Essence, bleed rounding, Urge cost, Drain math, abjuration vs Conditions).
+  These were ruled [interp] in 99. Key RAW insight added: Strengthen → temporary Open → Fetter freezes Open (p. 188).
