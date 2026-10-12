@@ -9,7 +9,7 @@ sessions never need the full book again. Full-book reads are expensive
 
 | # | Book | File (`../rulebooks/`) | Size | Extract dir | Status |
 |---|------|------------------------|------|-------------|--------|
-| 1 | Vampire: the Requiem 2e | `Vampire the Requiem - SECOND EDITION.txt` | 1.30 MB / 29.6K lines | `vtr2e/` | ⏳ next |
+| 1 | Vampire: the Requiem 2e | `Vampire the Requiem - SECOND EDITION.txt` | 1.30 MB / 29.6K lines | `vtr2e/` | ✅ done 2026-10-12 (~38K tokens) |
 | 2 | Chronicles of Darkness core | `Chronicles of Darkness.txt` | 1.63 MB / 16.5K lines | `cod_core/` | ✅ done 2026-10-12 (~33K tokens) |
 | 3 | Werewolf: the Forsaken 2e | `Werewolf_the_Forsaken_Second_Edition_(Download_Final).txt` | 1.47 MB / 38.5K lines | `wtf2e/` | todo |
 | 4 | Changeling: the Lost 2e | `Changeling_the_Lost_2e_(Final_Download).txt` | 1.43 MB / 32.5K lines | `ctl2e/` | todo |
@@ -100,3 +100,11 @@ Test cases:
   tokens. Two-column layout interleaves text; tables (weapons, Tilts) survive OK. Self-test scene (mortals +
   Social Maneuvering + Rank 2 ghost possession + grapple + abjuration) found no rules errors, only RAW-silent gaps
   (ties, grapple action economy, darkness) — patched as [interp] in the extracts.
+- **Vampire (2026-10-12)**: page numbers again bare lines at page end (one false hit: "100" at L5701 is a table cell).
+  ~44 bytes/line, so ~1500–1800-line Read chunks fit the 25K limit. Ch1 (clans/covenants), Ch2 (setting) and Ch6
+  (sample cities) are fluff — skimmed/grepped Ch6 for mechanics (Jiang Shi clan, Tokyo zaibatsu). Two-column layout
+  splits some sentences across distant lines (Mekhet bane L8040+L8093; Raptured/Sated mixed). VtR reprints core combat,
+  Social Maneuvering and equipment, so the extract is self-sufficient except mortal stat blocks and Tilts. Self-test
+  (Daeva + 3 police) passed all three known traps; only RAW-silent gaps (Idol edge cases, Charmed duration, reflexive
+  timing, Humanity penalty scope) — patched as [interp].
+
