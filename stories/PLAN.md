@@ -13,7 +13,7 @@ sessions never need the full book again. Full-book reads are expensive
 | 2 | Chronicles of Darkness core | `Chronicles of Darkness.txt` | 1.63 MB / 16.5K lines | `cod_core/` | ✅ done 2026-10-12 (~33K tokens) |
 | 3 | Werewolf: the Forsaken 2e | `Werewolf_the_Forsaken_Second_Edition_(Download_Final).txt` | 1.47 MB / 38.5K lines | `wtf2e/` | ✅ done 2026-10-12 (~40K tokens) |
 | 4 | Changeling: the Lost 2e | `Changeling_the_Lost_2e_(Final_Download).txt` | 1.43 MB / 32.5K lines | `ctl2e/` | ✅ done 2026-10-12 (~44K tokens) |
-| 5 | Geist: the Sin-Eaters 2e | `Geist_the_Sin-Eaters_Second_Edition_(Final_Download)(1).txt` | 1.73 MB / 18.7K lines | `gts2e/` | todo |
+| 5 | Geist: the Sin-Eaters 2e | `Geist_the_Sin-Eaters_Second_Edition_(Final_Download)(1).txt` | 1.73 MB / 18.7K lines | `gts2e/` | ✅ done 2026-10-13 (~44K tokens) |
 | 6 | Mage: the Awakening 2e | `Mage the Awakening - Second Edition.txt` | 1.42 MB / 32.5K lines | `mta2e/` | ✅ done 2026-10-12 (~49K tokens) |
 
 Why core second: combat, skills, mortal merits, Conditions/Tilts and the
@@ -139,3 +139,9 @@ Test cases:
   There's no example file for Mage, so I wrote a test scene: an Obrimos Arrow vs a Panopticon Seer in a garage with two Sleeper guards. It covered Counterspell, Mage Armor, an Aimed spell that hit a
   bystander in its area, Paradox contain/release, Withstand, Dissonance, Hubris and Scrutiny. It found **no extract errors** and ~20 RAW-silent points (witness counts, Counterspell timing/Mana,
   Active Sight penalty scope, Dissonance scope, experienced-start XP), which I ruled in 99 §C. The subagent's handback arrived properly this time.
+
+- **Geist (2026-10-13)**: **Different page-marker layout.** There are no bare-number lines. Pages are marked by running headers at the **top** of each page: even pages read `NN   Chapter …`, odd pages are right-aligned `Section   NN`. Build the map with `grep -nE '^[0-9]{1,3}\s{2,}(Chapter|Introduction|Appendix)|^\s{30,}[A-Z].*\s{3,}[0-9]{1,3}\s*$'`. The TOC fills L1–358.
+  The lines are long (~92 bytes, heavy indentation), so ~550–850-line chunks fit the 25K limit; 1000 lines overflowed.
+  Ch1 (Burdens and archetypes) is grep-able: the Haunt affinities and starting Ceremonies sit in tagged lines. Ch2 is lore. Ch4 pp. 139–173 reprint core: I grepped for Sin-Eater deltas (Abjuration, Warding, Beaten Down) and read krewes, ghosts and the Underworld in full. Ch6 is setting, so I read only the Dominions (pp. 251–255). Ch7 has the Remembrance and end-game mechanics.
+  The book contradicts itself in a few places: geist Defense on the sheet, Dead Condition timing, the Absent's Virtue regain, the Remembrance Trait cap. These are logged in 99 §A.
+  Self-test scene: a Vengeful Sin-Eater plus a dead celebrant vs a masked Reaper in a cemetery, covering Aura Flare, Key unlocks and Doom, Engulf, a crisis point, Plasmic healing, opening the Gate, and a mortal witness. It found **no extract errors** and ~20 RAW-silent points (ghost attack pools, Engulf timing, Reaper reform location, Gate keys from the living side, Aura Flare scope). These are ruled in 99 §D. The subagent handback arrived cleanly.
