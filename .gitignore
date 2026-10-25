@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Rust / maturin build output
+target/
+python/cod_sim/*.so
+python/cod_sim/*.pyd
+
+# Training artifacts (large, regenerable via scripts/train.py)
+checkpoints/
+checkpoints_*/
+
+# Copyrighted source material — keep local only
+rulebooks/
+
+# Local tool settings
+.claude/settings.local.json

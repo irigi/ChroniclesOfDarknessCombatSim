@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "additionalDirectories": ["../rulebooks"],
+    "allow": [
+      "Read(../rulebooks/**)",
+      "Bash(python3 tools/roll.py:*)"
+    ]
+  },
+  "claudeMdExcludes": ["**/ChroniclesOfDarknessCombatSim/CLAUDE.md"]
+}
